@@ -18,8 +18,22 @@ In addition, this project will include:
 
 ### Architecture and Technologies
 
+This project will use the following technologies:
+
+- `JavaScript` for game logic,
+- `CSS` for effects rendering,
+- `Browserify` to bundle js files.
+
+This project will contain the following two scripts to handle the functionality of the game:
+
+`game.js`: this script will handle the logic for visual elements and rendering them to the DOM.
+
+`rhythm.js`: this script will handle the logic behind the scenes for playing the songs and tracking the score.
 
 ### Implementation Timeline
 
+**Day 1**: Setup all necessary Node modules and webpack. Write an entry file and render something basic on the screen.
 
-### Bonus features
+**Day 2**: Create functionality for starting and pausing song as well as keeping track of score.
+
+**Day 3**: Css styling and animations.  
