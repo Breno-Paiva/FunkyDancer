@@ -73,36 +73,61 @@
 
 const Dancer = __webpack_require__(2);
 const Notes = __webpack_require__(3);
+const Song = __webpack_require__(4);
 
 document.addEventListener('DOMContentLoaded', ()=> {
 
   const gameCanvas = document.getElementById('gameCanvas');
   var stage = new createjs.Stage(gameCanvas);
 
-  dancer = new Dancer(stage);
+  var dancer = new Dancer(stage);
 
-  $('body').on('keydown', function(e){
-    switch (e.which) {
-      case 74:
-        dancer.animate("slap")
-        break;
-      case 75:
-        dancer.animate("spin")
-        break;
-      case 76:
-        dancer.animate("baloon")
-        break;
+  var song = new Song(1);
+  $('#play').click((e) => {
+    song.play()
+  })
+
+  $('body').on('keydown', (e)=>{
+    if (e.which === 74) {
+      var note1 = new createjs.Shape();
+      note1.graphics.beginFill("violet").drawRect(550, 20, 15, 10);
+      createjs.Tween.get(note1, {override: true})
+      .to({ y: 390 }, 1500)
+      stage.addChild(note1)
+    }
+  })
+  $('body').on('keydown', (e)=>{
+    if (e.which === 75) {
+      var note2 = new createjs.Shape();
+      note2.graphics.beginFill("teal").drawRect(600, 20, 15, 10);
+      createjs.Tween.get(note2, {override: true})
+      .to({ y: 390 }, 1500)
+      stage.addChild(note2)
+    }
+  })
+  $('body').on('keydown', (e)=>{
+    if (e.which === 76) {
+      var note3 = new createjs.Shape();
+      note3.graphics.beginFill("tomato").drawRect(650, 20, 15, 10);
+      createjs.Tween.get(note3, {override: true})
+      .to({ y: 390 }, 1500)
+      stage.addChild(note3)
     }
   })
 
-  notes = new Notes(stage);
 
-  for (var i = 1; i < 5; i++) {
-    notes.scroll(i);
-  }
+
 
   createjs.Ticker.setFPS(60);
-  createjs.Ticker.addEventListener("tick", stage);
+  createjs.Ticker.addEventListener("tick", handleTick);
+
+  function handleTick(event){
+    if (song.currentTime() > 2 && song.currentTime() < 2.05){
+      console.log(song.currentTime())
+      return console.log("dope")
+    }
+    stage.update(event)
+  }
 });
 
 
@@ -110,13 +135,13 @@ document.addEventListener('DOMContentLoaded', ()=> {
 /* 2 */
 /***/ (function(module, exports) {
 
-var dancerData = {
+const dancerData = {
     images: ["./assets/images/dancer_sheet.png"],
     frames: {width:110, height:128},
     animations: {
       waiting: [0, 7, "waiting"],
       pat: [8,15],
-      raise: [16, 23],
+      raise: [16, 19, "waiting"],
       sway: [24, 31],
       slap: [32, 39, "waiting"],
       yes: [40, 47],
@@ -125,7 +150,7 @@ var dancerData = {
       baloon: [64, 71, "waiting"],
       zen: [72, 79]
     },
-    framerate: 12
+    framerate: 16
 };
   var dancerSpriteSheet = new createjs.SpriteSheet(dancerData);
 
@@ -135,7 +160,20 @@ class Dancer {
     this.dancerAnimation = new createjs.Sprite(dancerSpriteSheet, "waiting");
     this.dancerAnimation.x = 150;
     this.dancerAnimation.y = 100;
-    this.stage.addChild(this.dancerAnimation)
+    this.stage.addChild(this.dancerAnimation);
+    $('body').on('keydown', (e)=>{
+      switch (e.which) {
+        case 74:
+          this.animate("raise")
+          break;
+        case 75:
+          this.animate("spin")
+          break;
+        case 76:
+          this.animate("baloon")
+          break;
+      }
+    })
   }
 
   animate(move){
@@ -165,7 +203,7 @@ var note4 = new createjs.Shape();
 note4.graphics.beginFill("maroon").drawRect(700, 20, 15, 10);
 
 var Note = {
-  1 : note1,
+  1: note1,
   2: note2,
   3: note3,
   4: note4
@@ -177,13 +215,55 @@ class Notes {
   }
 
   scroll(noteID){
+    var note = Note[noteID]
+    createjs.Tween.get(note, {override: true})
+    .to({ y: 390 }, 1500)
+
     this.stage.addChild(Note[noteID])
-    createjs.Tween.get(Note[noteID], { loop: true })
-    .to({ y: 390 }, 1500, createjs.Ease.getPowInOut(1))
   }
 }
 
 module.exports = Notes;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+const Songs = {
+  1: "./assets/sounds/POL-chubby-cat-short.wav"
+}
+
+class Song {
+  constructor(songID){
+    this.song = new Audio();
+    this.song.src = Songs[songID];
+    // $('body').on('keydown', (e)=>{
+    //   if (e.which === 84) {
+    //     if (this.song.currentTime > 2 && this.song.currentTime < 3) {
+    //       console.log("winner")
+    //     }else{
+    //       console.log(this.song.currentTime);
+    //       // console.log(createjs.Ticker.getTime());
+    //       const tare = createjs.Ticker.getTime()
+    //       console.log(tare)
+    //       // console.log(song.currentTime)
+    //     }
+    //   }
+    // })
+  }
+
+  play(){
+    this.song.play();
+  }
+
+  currentTime(){
+    return this.song.currentTime
+  }
+
+}
+
+module.exports = Song;
 
 
 /***/ })
