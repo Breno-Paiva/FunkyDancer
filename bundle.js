@@ -80,18 +80,26 @@ document.addEventListener('DOMContentLoaded', ()=> {
   var stage = new createjs.Stage(gameCanvas);
 
   dancer = new Dancer(stage);
-  dancer.animate("go");
+
+  $('body').on('keydown', function(e){
+    switch (e.which) {
+      case 74:
+        dancer.animate("slap")
+        break;
+      case 75:
+        dancer.animate("spin")
+        break;
+      case 76:
+        dancer.animate("baloon")
+        break;
+    }
+  })
 
   notes = new Notes(stage);
 
   for (var i = 1; i < 5; i++) {
     notes.scroll(i);
   }
- 
-  // var button = new createjs.Shape();
-  // button.graphics.beginFill("red").drawRect(200, 300, 60, 30);
-  // stage.addChild(button)
-
 
   createjs.Ticker.setFPS(60);
   createjs.Ticker.addEventListener("tick", stage);
@@ -106,15 +114,15 @@ var dancerData = {
     images: ["./assets/images/dancer_sheet.png"],
     frames: {width:110, height:128},
     animations: {
-      waiting: [0, 7],
+      waiting: [0, 7, "waiting"],
       pat: [8,15],
       raise: [16, 23],
       sway: [24, 31],
-      slap: [32, 39],
+      slap: [32, 39, "waiting"],
       yes: [40, 47],
-      spin: [48, 55],
+      spin: [48, 55, "waiting"],
       go: [56, 63],
-      baloon: [64, 71],
+      baloon: [64, 71, "waiting"],
       zen: [72, 79]
     },
     framerate: 12
@@ -124,13 +132,16 @@ var dancerData = {
 class Dancer {
   constructor(stage) {
     this.stage = stage;
+    this.dancerAnimation = new createjs.Sprite(dancerSpriteSheet, "waiting");
+    this.dancerAnimation.x = 150;
+    this.dancerAnimation.y = 100;
+    this.stage.addChild(this.dancerAnimation)
   }
 
   animate(move){
-    var dancerAnimation = new createjs.Sprite(dancerSpriteSheet, move)
-    dancerAnimation.x = 150
-    dancerAnimation.y = 100
-    this.stage.addChild(dancerAnimation);
+    // dancerAnimation.gotoAndStop("go");
+    this.dancerAnimation.gotoAndPlay(move);
+    // this.stage.addChild(this.dancerAnimation);
   }
 }
 
