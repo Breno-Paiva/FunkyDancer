@@ -75,6 +75,7 @@ const Dancer = __webpack_require__(2);
 const Notes = __webpack_require__(3);
 const Song = __webpack_require__(4);
 const Sheet = __webpack_require__(5);
+const Feedback = __webpack_require__(6);
 
 document.addEventListener('DOMContentLoaded', ()=> {
 
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
   var background1 = new Image()
   var background2 = new Image()
   background1.src = "./assets/images/outside.png"
-  background2.src = "./assets/images/sunset.png"
+  background2.src = "./assets/images/fragile-soft-machine.png"
   var back1 = new createjs.Bitmap(background1);
   var back2 = new createjs.Bitmap(background2);
   back1.setTransform(0, -80, .16, .16)
@@ -102,7 +103,8 @@ document.addEventListener('DOMContentLoaded', ()=> {
   })
 
   var note = new Notes(stage)
-  var sheet = new Sheet(note)
+  var feedback = new Feedback(stage)
+  var sheet = new Sheet(note, feedback)
 
   $('body').on('keydown', (e)=>{
     switch (e.which) {
@@ -126,12 +128,27 @@ document.addEventListener('DOMContentLoaded', ()=> {
               .drawRect(550, 300, 160, 10)
   stage.addChild(bar)
 
+  var note1 = new createjs.Shape();
+  note1.graphics.beginFill("violet")
+               .drawRect(550, 300, 15, 10)
+  var note2 = new createjs.Shape();
+  note2.graphics.beginFill("teal")
+               .drawRect(600, 300, 15, 10)
+  var note3 = new createjs.Shape();
+  note3.graphics.beginFill("tomato")
+               .drawRect(650, 300, 15, 10)
+  var note4 = new createjs.Shape();
+  note4.graphics.beginFill("maroon")
+               .drawRect(700, 300, 15, 10)
 
-  createjs.Ticker.setFPS(60);
+stage.addChild(note1, note2, note3, note4)
+
+
+  createjs.Ticker.setFPS(55);
   createjs.Ticker.addEventListener("tick", handleTick);
 
   function handleTick(event){
-    if (song.currentTime() > .01 && song.currentTime() < 13.02){
+    if (song.currentTime() > .01 && song.currentTime() < 17.02){
       sheet.setCurrentTime(song.currentTime())
       sheet.play()
     }
@@ -160,7 +177,7 @@ const dancerData = {
       baloon: [64, 71, "waiting"],
       zen: [72, 79]
     },
-    framerate: 16
+    framerate: 12
 };
   var dancerSpriteSheet = new createjs.SpriteSheet(dancerData);
 
@@ -168,8 +185,6 @@ class Dancer {
   constructor(stage) {
     this.stage = stage;
     this.dancerAnimation = new createjs.Sprite(dancerSpriteSheet, "waiting");
-    // this.dancerAnimation.x = 235;
-    // this.dancerAnimation.y = 250;
     this.dancerAnimation.setTransform(262, 138, 1.3, 1.3)
     this.stage.addChild(this.dancerAnimation);
     $('body').on('keydown', (e)=>{
@@ -222,6 +237,7 @@ class Notes {
                  .drawRect(xCoord, 25, 15, 10)
     createjs.Tween.get(note, {override: true})
     .to({ y: 275 }, 1000)
+    .to({ y: 525 }, 1000)
 
     this.stage.addChild(note)
   }
@@ -246,7 +262,6 @@ class Song {
 
   play(){
     this.song.play();
-    // sheet.play()
   }
 
   currentTime(){
@@ -263,59 +278,61 @@ module.exports = Song;
 /***/ (function(module, exports) {
 
 const Song1 = [
-  {time: 1, noteID: 1},
-  // {time: 1.5, noteID: 2},
-  {time: 2, noteID: 1},
-  // {time: 2.5, noteID: 2},
-  {time: 3, noteID: 3},
-  // {time: 3.5, noteID: 4},
-  {time: 4, noteID: 2},
-  {time: 5, noteID: 3},
-  {time: 6, noteID: 1},
-  {time: 7, noteID: 1},
-  {time: 8, noteID: 3},
-  {time: 9, noteID: 2},
-  {time: 10, noteID: 3},
-  {time: 11, noteID: 1},
-  {time: 12, noteID: 2},
-  {time: 13, noteID: 2},
-  {time: 14, noteID: 1}
+  {time: 1.65, noteID: 1},
+  {time: 2.2, noteID: 2},
+  {time: 2.75, noteID: 1},
+  {time: 3.3, noteID: 2},
+  {time: 3.85, noteID: 1},
+  {time: 4.125, noteID: 1},
+  {time: 4.4, noteID: 3},
+  {time: 4.95, noteID: 1},
+  {time: 5.5, noteID: 2},
+  {time: 6.05, noteID: 1},
+  {time: 6.6, noteID: 2},
+  {time: 7.7, noteID: 4},
+  // {time: 8.25, noteID: 1},
+  {time: 8.8, noteID: 1},
+  {time: 9.35, noteID: 2},
+  {time: 9.9, noteID: 1},
+  {time: 10.45, noteID: 2},
+  {time: 11, noteID: 3},
+  // {time: 11.55, noteID: 4},
+  {time: 12.1, noteID: 1},
+  {time: 12.6, noteID: 2},
+  {time: 13.15, noteID: 1},
+
+  {time: 14.25, noteID: 1},
+  {time: 14.8, noteID: 2},
+  {time: 15.35, noteID: 1},
+
+  {time: 16.45, noteID: 3},
+  // {time: 16.75, noteID: 3},
+  {time: 17, noteID: 3},
 ]
-// const Song1 = [
-//   {time: .5, noteID: 1},
-//   {time: .7, noteID: 1},
-//   {time: .8, noteID: 3},
-//   {time: 1.2, noteID: 2},
-//   {time: 1.25, noteID: 3},
-//   {time: 1.5, noteID: 1},
-//   {time: 2.7, noteID: 1},
-//   {time: 3.8, noteID: 3},
-//   {time: 5.2, noteID: 2},
-//   {time: 6.25, noteID: 3},
-//   {time: 9.5, noteID: 1},
-//   {time: 10.7, noteID: 1}
-// ]
 
 class Sheet {
-  constructor(note){
+  constructor(note, feedback){
     this.note = note;
-    this.i = 0
-    this.j = 0
-    this.currentTime = 0
+    this.feedback = feedback;
+    this.i = 0;
+    this.j = 0;
+    this.currentTime = 0;
+    this.score = 0;
+    this.streak = 0;
   }
 
   setCurrentTime(currentTime){
     this.currentTime = currentTime;
     if (this.j < Song1.length) {
-      if ((this.currentTime) > (Song1[this.j].time +1.1)){
+      if ((this.currentTime) > (Song1[this.j].time +0.1)){
         this.j += 1;
       }
     }
-
   }
+
   play(){
     if (this.i < Song1.length) {
-      if (this.currentTime > Song1[this.i].time){
+      if (this.currentTime > (Song1[this.i].time - 1) ){
         this.note.scroll(Song1[this.i].noteID)
         this.i += 1;
       }
@@ -323,18 +340,24 @@ class Sheet {
   }
 
   strike(noteID){
-    // console.log("time")
-    // console.log(Song1[this.j].time)
-    if(this.currentTime < ( Song1[this.j].time+1.1) && this.currentTime > (Song1[this.j].time + 0.9)){
+    if(this.currentTime < (Song1[this.j].time+ 0.1)
+    && this.currentTime > (Song1[this.j].time - 0.1)
+    && noteID === Song1[this.j].noteID){
       console.log("correct!")
+      this.score += 1;
+      this.streak += 1;
+      $("#score").html(this.score)
+      $("#streak").html(this.streak)
+      this.feedback.nice();
+      if (this.streak === 5) this.feedback.streak("5 pt streak!");
+      if (this.streak === 10) this.feedback.streak("10 pt streak!");
+      if (this.streak === 25) this.feedback.perfect();
     }else{
       console.log("wrong!")
+      this.streak = 0;
+      $("#streak").html(this.streak)
     }
-    console.log(this.currentTime)
-    // console.log("noteID")
-    // console.log(Song1[this.j].noteID)
   }
-
 
   reset(){
     this.i = 0
@@ -342,6 +365,48 @@ class Sheet {
 }
 
 module.exports = Sheet;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+class Feedback {
+  constructor(stage){
+    this.stage = stage
+  }
+
+  nice(){
+    var feed = new createjs.Text("NICE!", "15px Arial", "red");
+    feed.x = 600
+    feed.y = 320
+
+    createjs.Tween.get(feed, {override: true})
+    .to({ y: 420 }, 1000)
+    this.stage.addChild(feed)
+  }
+
+  streak(num){
+    var feed = new createjs.Text(num, "20px Arial", "yellow");
+    feed.x = 600
+    feed.y = 350
+
+    createjs.Tween.get(feed, {override: true})
+    .to({ y: 420 }, 1500)
+    this.stage.addChild(feed)
+  }
+  perfect(){
+    var feed = new createjs.Text("PERFECT SCORE", "30px Arial", "salmon");
+    feed.x = 400
+    feed.y = 150
+
+    createjs.Tween.get(feed, {override: true})
+    .to({ y: 400 }, 5000)
+    this.stage.addChild(feed)
+  }
+}
+
+module.exports = Feedback
 
 
 /***/ })
