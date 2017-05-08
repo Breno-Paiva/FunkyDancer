@@ -1,7 +1,7 @@
-## Frizzy Dance
+## Funky Dancer
 
-[Live link][frizzydance]
+[Live link][funkydancer]
 
 to play use the keys: "j", "k", "l", ";"
 
-[frizzydance]: https://friskyb.github.io/FrizzyDance/
+[funkydancer]: https://friskyb.github.io/FunkyDancer/
