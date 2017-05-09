@@ -1,5 +1,5 @@
 #gameCanvas {
-  border: 5px solid black;
+  border: 2px solid gray;
   border-radius: 10px;
   margin: 0 auto;
   background: aquamarine;
@@ -10,10 +10,16 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 
 #play {
   margin: 0 auto;
   width: 100px;
-  background: yellow;
+  background: #ffd265;
+}
+
+h1 {
+  padding: 10px;
+  font-size: 40px;
 }
