@@ -307,6 +307,8 @@ class Sheet {
   reset(){
     this.i = 0;
     this.j = 0;
+    this.score = 0;
+    this.streak = 0;
     $("#score").html(0)
     $("#streak").html(0)
   }
