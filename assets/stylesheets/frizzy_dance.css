@@ -5,6 +5,15 @@
   background: aquamarine;
 }
 
+.title-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+
 body {
   background: #b6f1fd;
   display: flex;
@@ -32,6 +41,7 @@ body {
 h1 {
   padding: 10px;
   font-size: 40px;
+  margin: auto 175px;
 }
 
 .interface {
