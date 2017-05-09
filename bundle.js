@@ -151,8 +151,6 @@ class Feedback {
 
     let audiofeed = new Audio();
     audiofeed.src = "./assets/sounds/funky_AJ.m4a";
-    // audiofeed.volume = 1.2;
-    // debugger
     audiofeed.play();
 
   }
@@ -297,11 +295,14 @@ class Sheet {
       if (this.streak === 25) this.feedback.perfect();
     }else{
       console.log("wrong!")
-      // var notez2 = new createjs.Shape();
-      // notez2.graphics.beginFill("red")
-      //              .drawEllipse(450, 350, 25, 20)
-      // this.stage.addChild(notez2);
-      // setTimeout(()=>this.stage.removeChild(notez2), 100)
+
+      let xCoord = this.note.note[noteID].xCoord
+      var notez2 = new createjs.Shape();
+      notez2.graphics.beginFill("red")
+                   .drawEllipse(xCoord, 350, 25, 20)
+      this.stage.addChild(notez2);
+      notez2.alpha = 0.6;
+      setTimeout(()=>this.stage.removeChild(notez2), 100)
       this.streak = 0;
       $("#streak").html(this.streak)
     }
@@ -327,11 +328,16 @@ class Song {
   constructor(songID){
     this.song = new Audio();
     this.song.src = Songs[songID];
-    this.song.volume = 0.4;
+    this.song.volume = 0.3;
+
+    this.shallWe = new Audio();
+    this.shallWe.src = "./assets/sounds/shall_we_AJ.m4a";
   }
 
   play(){
-    this.song.play();
+    this.shallWe.play();
+    setTimeout(()=> this.song.play(), 2000);
+    // this.song.play();
   }
 
   currentTime(){
@@ -424,11 +430,15 @@ stage.addChild(note1, note2, note3, note4)
   createjs.Ticker.addEventListener("tick", handleTick);
 
   function handleTick(event){
-    if (song.currentTime() > .01 && song.currentTime() < 17.02){
+    if (song.currentTime() > .0001 && song.currentTime() < 17.02){
       sheet.setCurrentTime(song.currentTime())
       sheet.play()
     }
-
+    if (song.currentTime() > 17 && song.currentTime() < 17.02) {
+      let soGood = new Audio();
+      soGood.src = "./assets/sounds/so_good_AJ.m4a";
+      soGood.play()
+    }
     stage.update(event)
   }
 });
