@@ -148,6 +148,13 @@ class Feedback {
     createjs.Tween.get(feed, {override: true})
     .to({ y: 420 }, 1500)
     this.stage.addChild(feed)
+
+    let audiofeed = new Audio();
+    audiofeed.src = "./assets/sounds/funky_AJ.m4a";
+    // audiofeed.volume = 1.2;
+    // debugger
+    audiofeed.play();
+
   }
   perfect(){
     var feed = new createjs.Text("PERFECT SCORE", "30px Arial", "salmon");
@@ -285,6 +292,8 @@ class Sheet {
 
       if (this.streak === 5) this.feedback.streak("5 pt streak!");
       if (this.streak === 10) this.feedback.streak("10 pt streak!");
+      if (this.streak === 15) this.feedback.streak("15 pt streak!");
+      if (this.streak === 20) this.feedback.streak("20 pt streak!");
       if (this.streak === 25) this.feedback.perfect();
     }else{
       console.log("wrong!")
@@ -318,6 +327,7 @@ class Song {
   constructor(songID){
     this.song = new Audio();
     this.song.src = Songs[songID];
+    this.song.volume = 0.4;
   }
 
   play(){
