@@ -130,20 +130,10 @@ class Feedback {
     this.stage = stage
   }
 
-  nice(){
-    var feed = new createjs.Text("NICE!", "15px Arial", "red");
-    feed.x = 600
-    feed.y = 320
-
-    createjs.Tween.get(feed, {override: true})
-    .to({ y: 420 }, 1000)
-    this.stage.addChild(feed)
-  }
-
   streak(num){
-    var feed = new createjs.Text(num, "20px Arial", "yellow");
-    feed.x = 600
-    feed.y = 350
+    var feed = new createjs.Text(num, "50px Arial", "yellowgreen");
+    feed.x = 100
+    feed.y = 150
 
     createjs.Tween.get(feed, {override: true})
     .to({ y: 420 }, 1500)
@@ -154,9 +144,10 @@ class Feedback {
     audiofeed.play();
 
   }
+  
   perfect(){
     var feed = new createjs.Text("PERFECT SCORE", "30px Arial", "salmon");
-    feed.x = 400
+    feed.x = 200
     feed.y = 150
 
     createjs.Tween.get(feed, {override: true})
@@ -244,6 +235,9 @@ class Sheet {
     this.currentTime = 0;
     this.score = 0;
     this.streak = 0;
+    this.correctStrike = this.correctStrike.bind(this);
+    this.wrongStrike = this.wrongStrike.bind(this);
+    this.renderStrike = this.renderStrike.bind(this);
   }
 
   setCurrentTime(currentTime){
@@ -264,47 +258,57 @@ class Sheet {
     }
   }
 
+  correctStrike(noteID){
+    this.score += 1;
+    this.streak += 1;
+    $("#score").html(this.score)
+    $("#streak").html(this.streak)
+
+    this.renderStrike(noteID, "black");
+
+    if (this.streak === 5) this.feedback.streak("5 pt streak!");
+    if (this.streak === 15) this.feedback.streak("15 pt streak!");
+    if (this.streak === 25) this.feedback.perfect();
+  }
+
+  wrongStrike(noteID){
+    this.streak = 0;
+    $("#streak").html(this.streak)
+
+    let noFx = new Audio();
+    noFx.src = "./assets/sounds/no_fx.mp3";
+    noFx.volume = .2;
+    noFx.play();
+
+    this.renderStrike(noteID, "red");
+  }
+
+  renderStrike(noteID, color){
+    let xCoord = this.note.note[noteID].xCoord
+    var strikeNote = new createjs.Shape();
+    strikeNote.graphics.beginFill(color)
+                   .drawEllipse((xCoord - 2), 348, 29, 24)
+    this.stage.addChild(strikeNote);
+
+    strikeNote.alpha = (color === "red") ? 0.55 : .35;
+    setTimeout(()=>this.stage.removeChild(strikeNote), 130)
+  }
+
   strike(noteID){
     if(this.currentTime < (Song1[this.j].time+ 0.1)
     && this.currentTime > (Song1[this.j].time - 0.1)
     && noteID === Song1[this.j].noteID){
-      console.log("correct!")
-      this.score += 1;
-      this.streak += 1;
-      $("#score").html(this.score)
-      $("#streak").html(this.streak)
-      // this.feedback.nice();
-      let xCoord = this.note.note[noteID].xCoord
-      var notez1 = new createjs.Shape();
-      notez1.graphics.beginFill("black")
-                   .drawEllipse((xCoord - 2), 348, 29, 24)
-      notez1.alpha = 0.35;
-      this.stage.addChild(notez1);
-      setTimeout(()=>this.stage.removeChild(notez1), 130)
-
-
-      if (this.streak === 5) this.feedback.streak("5 pt streak!");
-      if (this.streak === 10) this.feedback.streak("10 pt streak!");
-      if (this.streak === 15) this.feedback.streak("15 pt streak!");
-      if (this.streak === 20) this.feedback.streak("20 pt streak!");
-      if (this.streak === 25) this.feedback.perfect();
+      this.correctStrike(noteID)
     }else{
-      console.log("wrong!")
-
-      let xCoord = this.note.note[noteID].xCoord
-      var notez2 = new createjs.Shape();
-      notez2.graphics.beginFill("red")
-                   .drawEllipse((xCoord - 2), 348, 29, 24)
-      this.stage.addChild(notez2);
-      notez2.alpha = 0.5;
-      setTimeout(()=>this.stage.removeChild(notez2), 130)
-      this.streak = 0;
-      $("#streak").html(this.streak)
+      this.wrongStrike(noteID)
     }
   }
 
   reset(){
-    this.i = 0
+    this.i = 0;
+    this.j = 0;
+    $("#score").html(0)
+    $("#streak").html(0)
   }
 }
 
@@ -330,9 +334,12 @@ class Song {
   }
 
   play(){
-    this.shallWe.play();
-    setTimeout(()=> this.song.play(), 2000);
-    // this.song.play();
+      this.shallWe.play();
+      setTimeout(()=> this.song.play(), 2000);
+  }
+
+  duration(){
+    return this.song.duration
   }
 
   currentTime(){
@@ -375,8 +382,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
   var song = new Song(1);
   $('#play').click((e) => {
-    sheet.reset()
-    song.play()
+    if (song.currentTime() === 0 || song.currentTime() === song.duration()){
+      sheet.reset()
+      song.play()
+    }
   })
 
   var note = new Notes(stage)
