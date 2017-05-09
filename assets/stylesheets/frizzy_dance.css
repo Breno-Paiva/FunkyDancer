@@ -16,10 +16,33 @@ body {
 #play {
   margin: 0 auto;
   width: 100px;
-  background: #ffd265;
+  background: aqua;
+  border: 1px solid black;
 }
 
 h1 {
   padding: 10px;
   font-size: 40px;
+}
+
+.interface {
+  display: flex;
+  flex-direction: row;
+  width: 650px;
+}
+
+.directions{
+  background: #c568a5;
+  width: 415px;
+  border: 2px solid gray;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+.gameplay {
+  background: #ffd265;
+  width: 225px;
+  margin: 10px;
+  border: 2px solid gray;
+  border-radius: 10px;
 }
