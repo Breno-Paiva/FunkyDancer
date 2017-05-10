@@ -1,8 +1,21 @@
 #gameCanvas {
-  border: 2px solid gray;
-  border-radius: 10px;
-  margin: 0 auto;
+  border: 4px solid #bcff7c;
+  border-radius: 18px;
+  margin: 25px auto 15px;
   background: aquamarine;
+  -webkit-box-shadow: 0px 0px 16px 2px rgba(0,0,0,0.18);
+  -moz-box-shadow: 0px 0px 16px 2px rgba(0,0,0,0.18);
+  box-shadow: 0px 0px 16px 2px rgba(0,0,0,0.18);
+}
+
+.breno-profile {
+  width: 35px;
+  border-radius: 40px;
+  border: 3px solid #bcff7c;
+}
+
+.breno-profile:hover {
+    opacity: .85;
 }
 
 .title-bar {
@@ -10,12 +23,13 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  width: 650px;
 }
 
 
 
 body {
-  background: #b6f1fd;
+  background: #6e9298;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -23,52 +37,65 @@ body {
 }
 
 #play {
-  margin: 0 auto;
-  font-size: 16px;
-  text-align: center;
-  font-weight: bolder;
-  width: 100px;
   background: #c568a5;
-  border-radius: 8px;
+  border: 2px solid #944f7b;
+  border-radius: 16px;
+  color: #ffd265;
+  font-family: 'Exo', sans-serif;
+  font-size: 16px;
+  font-weight: bolder;
+  letter-spacing: 4px;
+  margin: 0 auto;
+  text-align: center;
+  width: 60px;
   width: 100px;
-  border: 2px solid gray;
 }
 
 #play:hover {
-  background: rgb(213, 147, 191)
+  background: rgb(197, 112, 168);
 }
 
 h1 {
   padding: 10px;
-  font-size: 40px;
-  margin: auto 175px;
+  font-size: 50px;
+
+text-shadow: 3px 0 0 #bcff7c, -3px 0 0 #bcff7c, 0 3px 0 #bcff7c, 0 -3px 0 #bcff7c, 2px 2px #bcff7c, -2px -2px 0 #bcff7c, 2px -2px 0 #bcff7c, -2px 2px 0 #bcff7c;  letter-spacing: 3px;
 }
 
 .interface {
   display: flex;
   flex-direction: row;
+  align-items: space-between;
   width: 650px;
 }
 
 .directions{
-  background: #bcff7c;
-  padding: 10px;
-  width: 395px;
-  border: 2px solid gray;
+  background: #9cdaff;
+  padding: 15px;
+  width: 380px;
+  border: 3px solid #bcff7c;
   border-radius: 10px;
-  margin: 10px;
+  margin: 10px 0 10px 10px;
   font-size: 11px;
 }
 
 .gameplay {
-  background: #bcff7c;
+  background: #9cdaff;
   padding: 10px;
   width: 205px;
   margin: 10px;
-  border: 2px solid gray;
+  border: 3px solid #bcff7c;
   border-radius: 10px;
 }
 
 .gameplay h2 {
   display: inline;
+}
+
+.fa {
+color: #bcff7c;
+}
+
+.fa:hover {
+  opacity: .8;
 }
