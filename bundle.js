@@ -198,7 +198,7 @@ module.exports = Notes;
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 const Song1 = [
   {time: 1.65, noteID: 1},
@@ -228,6 +228,9 @@ const Song1 = [
   {time: 17, noteID: 3},
 ]
 
+const StreakBar = __webpack_require__(6)
+var streakBar = new StreakBar
+
 class Sheet {
   constructor(note, feedback, stage){
     this.stage = stage;
@@ -237,7 +240,6 @@ class Sheet {
     this.j = 0;
     this.currentTime = 0;
     this.score = 0;
-    this.streak = 0;
     this.correctStrike = this.correctStrike.bind(this);
     this.wrongStrike = this.wrongStrike.bind(this);
     this.renderStrike = this.renderStrike.bind(this);
@@ -263,20 +265,18 @@ class Sheet {
 
   correctStrike(noteID){
     this.score += 1;
-    this.streak += 1;
     $("#score").html(this.score)
-    $("#streak").html(this.streak)
+    streakBar.plus()
 
     this.renderStrike(noteID, "black");
 
-    if (this.streak === 5) this.feedback.streak("5 pt streak!");
-    if (this.streak === 15) this.feedback.streak("15 pt streak!");
-    if (this.streak === 25) this.feedback.perfect();
+    // if (this.streak === 5) this.feedback.streak("5 pt streak!");
+    // if (this.streak === 15) this.feedback.streak("15 pt streak!");
+    // if (this.streak === 25) this.feedback.perfect();
   }
 
   wrongStrike(noteID){
-    this.streak = 0;
-    $("#streak").html(this.streak)
+    streakBar.clear();
 
     let noFx = new Audio();
     noFx.src = "./assets/sounds/no_fx.mp3";
@@ -311,9 +311,8 @@ class Sheet {
     this.i = 0;
     this.j = 0;
     this.score = 0;
-    this.streak = 0;
+    streakBar.clear()
     $("#score").html(0)
-    $("#streak").html(0)
   }
 }
 
@@ -466,6 +465,47 @@ stage.addChild(note1, note2, note3, note4)
     stage.update(event)
   }
 });
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+
+class StreakBar {
+
+  constructor(){
+    this.streak = 0;
+    this.update = this.update.bind(this);
+  }
+
+  plus(){
+    this.streak += 1;
+    $("#streak").html(this.streak);
+    this.update();
+  }
+
+  update(){
+    let width = this.streak % 9/9 *100
+    if (this.streak < 9){
+      $(".streak-bar").css({"width": `${width}%`});
+    }else{
+      $(".streak-bar").css({"width": `100%`});
+      $("body").css({"background": `#ffd265`});
+      $(".streak-container").css({"border":"2px solid #ffd265"})
+    }
+  }
+
+  clear(){
+    this.streak = 0;
+    $("#streak").html(0);
+    $(".streak-bar").css({"width": `0%`});
+    $("body").css({"background": `#6e9298`});
+    $(".streak-container").css({"border":"2px solid #aaa"})
+  }
+}
+
+module.exports = StreakBar
 
 
 /***/ })
