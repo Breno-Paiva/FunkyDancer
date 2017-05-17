@@ -142,9 +142,8 @@ class Feedback {
     let audiofeed = new Audio();
     audiofeed.src = "./assets/sounds/funky_AJ.m4a";
     audiofeed.play();
-
   }
-  
+
   perfect(){
     var feed = new createjs.Text("PERFECT SCORE", "30px Arial", "salmon");
     feed.x = 200
@@ -184,9 +183,13 @@ class Notes {
                  .drawEllipse(xCoord, 25, 25, 20)
     createjs.Tween.get(note, {override: true})
     .to({ y: 325 }, 1500)
-    // .to({ y: 625 }, 1000)
 
     this.stage.addChild(note)
+    this.noteIDX += 1
+  }
+
+  pauseScroll(){
+    note.setPaused()
   }
 }
 
@@ -338,6 +341,17 @@ class Song {
   play(){
       this.shallWe.play();
       setTimeout(()=> this.song.play(), 2000);
+      $("#play").html("||")
+  }
+
+  pause(){
+    if(this.song.paused){
+      this.song.play()
+      $("#play").html("||")
+    }else{
+      this.song.pause()
+      $("#play").html("play")
+    }
   }
 
   duration(){
@@ -381,18 +395,21 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
 
   var dancer = new Dancer(stage);
+  var note = new Notes(stage)
+  var feedback = new Feedback(stage)
+  var sheet = new Sheet(note, feedback, stage)
 
   var song = new Song(1);
   $('#play').click((e) => {
     if (song.currentTime() === 0 || song.currentTime() === song.duration()){
       sheet.reset()
       song.play()
+    }else{
+      song.pause()
+      createjs.Ticker.paused = createjs.Ticker.paused ? false : true;
     }
   })
 
-  var note = new Notes(stage)
-  var feedback = new Feedback(stage)
-  var sheet = new Sheet(note, feedback, stage)
 
   $('body').on('keydown', (e)=>{
     switch (e.which) {
@@ -436,14 +453,15 @@ stage.addChild(note1, note2, note3, note4)
   createjs.Ticker.addEventListener("tick", handleTick);
 
   function handleTick(event){
-    if (song.currentTime() > .0001 && song.currentTime() < 17.02){
+    if (song.currentTime() > 0 && song.currentTime() < 17.02){
       sheet.setCurrentTime(song.currentTime())
       sheet.play()
     }
-    if (song.currentTime() > 17 && song.currentTime() < 17.02) {
+    if (song.currentTime() > song.duration()-.02 && song.currentTime() < song.duration()) {
       let soGood = new Audio();
       soGood.src = "./assets/sounds/so_good_AJ.m4a";
-      soGood.play()
+      soGood.play();
+      $("#play").html("play");
     }
     stage.update(event)
   }
