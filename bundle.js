@@ -200,42 +200,89 @@ module.exports = Notes;
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Song1 = [
-  {time: 1.65, noteID: 1},
-  {time: 2.2, noteID: 2},
-  {time: 2.75, noteID: 1},
-  {time: 3.3, noteID: 2},
-  {time: 3.85, noteID: 1},
-  {time: 4.125, noteID: 1},
-  {time: 4.4, noteID: 3},
-  {time: 4.95, noteID: 1},
-  {time: 5.5, noteID: 2},
-  {time: 6.05, noteID: 1},
-  {time: 6.6, noteID: 2},
-  {time: 7.7, noteID: 4},
-  {time: 8.8, noteID: 1},
-  {time: 9.35, noteID: 2},
-  {time: 9.9, noteID: 1},
-  {time: 10.45, noteID: 2},
-  {time: 11, noteID: 3},
-  {time: 12.1, noteID: 1},
-  {time: 12.6, noteID: 2},
-  {time: 13.15, noteID: 1},
-  {time: 14.25, noteID: 1},
-  {time: 14.8, noteID: 2},
-  {time: 15.35, noteID: 1},
-  {time: 16.45, noteID: 3},
-  {time: 17, noteID: 3},
-]
+// const this.song = [
+//   {time: 1.65, noteID: 1},
+//   {time: 2.2, noteID: 2},
+//   {time: 2.75, noteID: 1},
+//   {time: 3.3, noteID: 2},
+//   {time: 3.85, noteID: 1},
+//   {time: 4.125, noteID: 1},
+//   {time: 4.4, noteID: 3},
+//   {time: 4.95, noteID: 1},
+//   {time: 5.5, noteID: 2},
+//   {time: 6.05, noteID: 1},
+//   {time: 6.6, noteID: 2},
+//   {time: 7.7, noteID: 4},
+//   {time: 8.8, noteID: 1},
+//   {time: 9.35, noteID: 2},
+//   {time: 9.9, noteID: 1},
+//   {time: 10.45, noteID: 2},
+//   {time: 11, noteID: 3},
+//   {time: 12.1, noteID: 1},
+//   {time: 12.6, noteID: 2},
+//   {time: 13.15, noteID: 1},
+//   {time: 14.25, noteID: 1},
+//   {time: 14.8, noteID: 2},
+//   {time: 15.35, noteID: 1},
+//   {time: 16.45, noteID: 3},
+//   {time: 17, noteID: 3},
+// ]
+//
+// const Song2 = [
+//   {time: 2, noteID: 1},
+//   {time: 3, noteID: 1},
+//   {time: 4, noteID: 1},
+//   {time: 5, noteID: 1},
+//   {time: 6, noteID: 1},
+//   {time: 7, noteID: 1}
+// ]
+const SongSheet = {
+  1: [
+    {time: 1.65, noteID: 1},
+    {time: 2.2, noteID: 2},
+    {time: 2.75, noteID: 1},
+    {time: 3.3, noteID: 2},
+    {time: 3.85, noteID: 1},
+    {time: 4.125, noteID: 1},
+    {time: 4.4, noteID: 3},
+    {time: 4.95, noteID: 1},
+    {time: 5.5, noteID: 2},
+    {time: 6.05, noteID: 1},
+    {time: 6.6, noteID: 2},
+    {time: 7.7, noteID: 4},
+    {time: 8.8, noteID: 1},
+    {time: 9.35, noteID: 2},
+    {time: 9.9, noteID: 1},
+    {time: 10.45, noteID: 2},
+    {time: 11, noteID: 3},
+    {time: 12.1, noteID: 1},
+    {time: 12.6, noteID: 2},
+    {time: 13.15, noteID: 1},
+    {time: 14.25, noteID: 1},
+    {time: 14.8, noteID: 2},
+    {time: 15.35, noteID: 1},
+    {time: 16.45, noteID: 3},
+    {time: 17, noteID: 3},
+  ],
+  2: [
+    {time: 2, noteID: 1},
+    {time: 3, noteID: 1},
+    {time: 4, noteID: 1},
+    {time: 5, noteID: 1},
+    {time: 6, noteID: 1},
+    {time: 7, noteID: 1}
+  ]
+}
 
 const StreakBar = __webpack_require__(6)
 var streakBar = new StreakBar
 
 class Sheet {
-  constructor(note, feedback, stage){
-    this.stage = stage;
+  constructor(note, feedback, stage, songID){
     this.note = note;
     this.feedback = feedback;
+    this.stage = stage;
+    this.song = SongSheet[songID];
     this.i = 0;
     this.j = 0;
     this.currentTime = 0;
@@ -243,21 +290,23 @@ class Sheet {
     this.correctStrike = this.correctStrike.bind(this);
     this.wrongStrike = this.wrongStrike.bind(this);
     this.renderStrike = this.renderStrike.bind(this);
+    this.play = this.play.bind(this);
+    this.setCurrentTime = this.setCurrentTime.bind(this);
   }
 
   setCurrentTime(currentTime){
     this.currentTime = currentTime;
-    if (this.j < Song1.length) {
-      if ((this.currentTime) > (Song1[this.j].time +0.1)){
+    if (this.j < this.song.length) {
+      if ((this.currentTime) > (this.song[this.j].time +0.1)){
         this.j += 1;
       }
     }
   }
 
   play(){
-    if (this.i < Song1.length) {
-      if (this.currentTime > (Song1[this.i].time - 1.5) ){
-        this.note.scroll(Song1[this.i].noteID)
+    if (this.i < this.song.length) {
+      if (this.currentTime > (this.song[this.i].time - 1.5) ){
+        this.note.scroll(this.song[this.i].noteID)
         this.i += 1;
       }
     }
@@ -298,9 +347,9 @@ class Sheet {
   }
 
   strike(noteID){
-    if(this.currentTime < (Song1[this.j].time+ 0.1)
-    && this.currentTime > (Song1[this.j].time - 0.1)
-    && noteID === Song1[this.j].noteID){
+    if(this.currentTime < (this.song[this.j].time+ 0.1)
+    && this.currentTime > (this.song[this.j].time - 0.1)
+    && noteID === this.song[this.j].noteID){
       this.correctStrike(noteID)
     }else{
       this.wrongStrike(noteID)
@@ -324,32 +373,39 @@ module.exports = Sheet;
 /***/ (function(module, exports) {
 
 const Songs = {
-  1: "./assets/sounds/POL-chubby-cat-short.wav"
+  1: "./assets/sounds/POL-chubby-cat-short.wav",
+  2: "./assets/sounds/funky_song.m4a"
 }
 
 class Song {
   constructor(songID){
+    this.songID = songID
     this.song = new Audio();
     this.song.src = Songs[songID];
     this.song.volume = 0.3;
 
     this.shallWe = new Audio();
     this.shallWe.src = "./assets/sounds/shall_we_AJ.m4a";
+
+    this.play = this.play.bind(this);
+    this.pause = this.pause.bind(this);
   }
 
   play(){
       this.shallWe.play();
       setTimeout(()=> this.song.play(), 2000);
-      $("#play").html("||")
+
+      $(`#play`).html("||")
+      $(".streak-container").css({"transition":"height 2s", "height":"25px"})
   }
 
   pause(){
     if(this.song.paused){
       this.song.play()
-      $("#play").html("||")
+      $(`#play`).html("||")
     }else{
       this.song.pause()
-      $("#play").html("play")
+      $(`#play`).html("play")
     }
   }
 
@@ -396,17 +452,29 @@ document.addEventListener('DOMContentLoaded', ()=> {
   var dancer = new Dancer(stage);
   var note = new Notes(stage)
   var feedback = new Feedback(stage)
-  var sheet = new Sheet(note, feedback, stage)
+  var sheet = new Sheet(note, feedback, stage, currentSongID)
 
   var song = new Song(1);
+  var currentSongID = 1;
+
   $('#play').click((e) => {
     if (song.currentTime() === 0 || song.currentTime() === song.duration()){
+      song = new Song(currentSongID);
+      sheet = new Sheet(note, feedback, stage, currentSongID)
       sheet.reset()
       song.play()
     }else{
       song.pause()
       createjs.Ticker.paused = createjs.Ticker.paused ? false : true;
     }
+  })
+
+  $('#song1').click((e) => {
+    currentSongID = 1;
+  })
+
+  $('#song2').click((e) => {
+    currentSongID = 2;
   })
 
 
@@ -452,7 +520,7 @@ stage.addChild(note1, note2, note3, note4)
   createjs.Ticker.addEventListener("tick", handleTick);
 
   function handleTick(event){
-    if (song.currentTime() > 0 && song.currentTime() < 17.02){
+    if (song.currentTime() > 0 && song.currentTime() < song.duration()-.02){
       sheet.setCurrentTime(song.currentTime())
       sheet.play()
     }

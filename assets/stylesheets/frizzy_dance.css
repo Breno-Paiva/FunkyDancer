@@ -103,7 +103,7 @@ color: #bcff7c;
 .streak-container {
   display: block;
   width: 610px;
-  height: 25px;
+  height: 0px;
   background: #c568a5;
   border-radius: 16px;
   border: 2px solid #aaa;
