@@ -42,13 +42,15 @@ body {
   border-radius: 16px;
   color: #ffd265;
   font-family: 'Exo', sans-serif;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bolder;
   letter-spacing: 4px;
   margin: 0 auto;
   text-align: center;
-  width: 60px;
+  /*width: 60px;*/
   width: 100px;
+  margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 #play:hover {
@@ -79,6 +81,11 @@ text-shadow: 3px 0 0 #bcff7c, -3px 0 0 #bcff7c, 0 3px 0 #bcff7c, 0 -3px 0 #bcff7
   font-size: 11px;
 }
 
+.directions h2 {
+  font-weight: normal;
+  font-family: 'Exo', sans-serif;
+}
+
 .gameplay {
   background: #9cdaff;
   padding: 10px;
@@ -86,10 +93,15 @@ text-shadow: 3px 0 0 #bcff7c, -3px 0 0 #bcff7c, 0 3px 0 #bcff7c, 0 -3px 0 #bcff7
   margin: 10px;
   border: 3px solid #bcff7c;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .gameplay h2 {
   display: inline;
+  padding: 1px;
 }
 
 .fa {
@@ -114,4 +126,52 @@ color: #bcff7c;
   height: 100%;
   background: #ffd265;
   z-index: 2;
+}
+
+
+#song1, #song2 {
+  background: #ccc;
+  font-family: 'Exo', sans-serif;
+  border: 1px solid black;
+  width: 90px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  padding: 1px;
+}
+
+#song1 {
+  background: yellow;
+}
+
+.gameplay h2 {
+  font-weight: normal;
+  font-family: 'Exo', sans-serif;
+}
+
+#score {
+  font-size: 35px;
+  font-family: 'Indie Flower', cursive;
+}
+
+#score, #groove {
+  font-size: 28px;
+  font-family: 'Indie Flower', cursive;
+}
+
+.directions i {
+  color: #c568a5;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.directions {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+#score-div {
+  padding-top: 10px;
 }

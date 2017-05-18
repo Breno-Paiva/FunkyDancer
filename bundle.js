@@ -128,31 +128,46 @@ module.exports = Dancer;
 class Feedback {
   constructor(stage){
     this.stage = stage
+    this.show = this.show.bind(this);
+    this.hide = this.hide.bind(this);
+    this.funky_text = new createjs.Bitmap("./assets/images/funky_text.png")
+    this.funky_text.x = 80;
+    this.funky_text.y = 50;
+    this.funky_text.scaleX = .25
+    this.funky_text.scaleY = .25
   }
 
-  streak(num){
-    var feed = new createjs.Text(num, "50px Arial", "yellowgreen");
-    feed.x = 100
-    feed.y = 150
-
-    createjs.Tween.get(feed, {override: true})
-    .to({ y: 420 }, 1500)
-    this.stage.addChild(feed)
-
+  show(){
     let audiofeed = new Audio();
     audiofeed.src = "./assets/sounds/funky_AJ.m4a";
     audiofeed.play();
+
+    this.stage.addChild(this.funky_text);
   }
 
-  perfect(){
-    var feed = new createjs.Text("PERFECT SCORE", "30px Arial", "salmon");
-    feed.x = 200
-    feed.y = 150
-
-    createjs.Tween.get(feed, {override: true})
-    .to({ y: 400 }, 5000)
-    this.stage.addChild(feed)
+  hide(){
+    this.stage.removeChild(this.funky_text);
   }
+  // streak(num){
+  //   var feed = new createjs.Text(num, "50px Arial", "yellowgreen");
+  //   feed.x = 100
+  //   feed.y = 150
+  //
+  //   createjs.Tween.get(feed, {override: true})
+  //   .to({ y: 420 }, 1500)
+  //   this.stage.addChild(feed)
+  //
+  // }
+  //
+  // perfect(){
+  //   var feed = new createjs.Text("PERFECT SCORE", "30px Arial", "salmon");
+  //   feed.x = 200
+  //   feed.y = 150
+  //
+  //   createjs.Tween.get(feed, {override: true})
+  //   .to({ y: 400 }, 5000)
+  //   this.stage.addChild(feed)
+  // }
 }
 
 module.exports = Feedback
@@ -265,20 +280,46 @@ const SongSheet = {
     {time: 17, noteID: 3},
   ],
   2: [
-    {time: 2, noteID: 1},
-    {time: 3, noteID: 1},
-    {time: 4, noteID: 1},
-    {time: 5, noteID: 1},
-    {time: 6, noteID: 1},
-    {time: 7, noteID: 1}
+    {time: 1.62, noteID: 1},
+    {time: 2.16, noteID: 2},
+    {time: 2.7, noteID: 1},
+    {time: 3.24, noteID: 2},
+
+    {time: 3.78, noteID: 1},
+    {time: 4.32, noteID: 2},
+    {time: 4.86, noteID: 1},
+    {time: 5.4, noteID: 2},
+    {time: 5.94, noteID: 1},
+    {time: 6.48, noteID: 2},
+
+    {time: 7.02, noteID: 3},
+    {time: 7.56, noteID: 3},
+
+    {time: 8.1, noteID: 1},
+    {time: 8.64, noteID: 2},
+    {time: 9.18, noteID: 1},
+    {time: 9.72, noteID: 2},
+    {time: 10.26, noteID: 1},
+    {time: 10.8, noteID: 2},
+    {time: 11.34, noteID: 3},
+    {time: 11.88, noteID: 3},
+
+    {time: 12.42, noteID: 1},
+    {time: 12.96, noteID: 2},
+    {time: 13.5, noteID: 1},
+    {time: 14.04, noteID: 2},
+    {time: 14.58, noteID: 1},
+    {time: 15.12, noteID: 2},
+    {time: 15.66, noteID: 3},
+    {time: 16.2, noteID: 3},
   ]
 }
 
 const StreakBar = __webpack_require__(6)
-var streakBar = new StreakBar
 
 class Sheet {
   constructor(note, feedback, stage, songID){
+    this.streakBar = new StreakBar(stage)
     this.note = note;
     this.feedback = feedback;
     this.stage = stage;
@@ -315,7 +356,7 @@ class Sheet {
   correctStrike(noteID){
     this.score += 1;
     $("#score").html(this.score)
-    streakBar.plus()
+    this.streakBar.plus()
 
     this.renderStrike(noteID, "black");
 
@@ -325,7 +366,7 @@ class Sheet {
   }
 
   wrongStrike(noteID){
-    streakBar.clear();
+    this.streakBar.clear();
 
     let noFx = new Audio();
     noFx.src = "./assets/sounds/no_fx.mp3";
@@ -360,7 +401,7 @@ class Sheet {
     this.i = 0;
     this.j = 0;
     this.score = 0;
-    streakBar.clear()
+    this.streakBar.clear()
     $("#score").html(0)
   }
 }
@@ -383,6 +424,9 @@ class Song {
     this.song = new Audio();
     this.song.src = Songs[songID];
     this.song.volume = 0.3;
+    if (songID === 2){
+      this.song.volume = 0.15;
+    }
 
     this.shallWe = new Audio();
     this.shallWe.src = "./assets/sounds/shall_we_AJ.m4a";
@@ -457,11 +501,23 @@ document.addEventListener('DOMContentLoaded', ()=> {
   var song = new Song(1);
   var currentSongID = 1;
 
+  $('#song1').click((e) => {
+    currentSongID = 1;
+    $('#song1').css({'background':"yellow"})
+    $('#song2').css({'background':"#ccc"})
+  })
+
+  $('#song2').click((e) => {
+    $('#song1').css({'background':"#ccc"})
+    $('#song2').css({'background':"yellow"})
+    currentSongID = 2;
+  })
+
   $('#play').click((e) => {
     if (song.currentTime() === 0 || song.currentTime() === song.duration()){
+      sheet.reset()
       song = new Song(currentSongID);
       sheet = new Sheet(note, feedback, stage, currentSongID)
-      sheet.reset()
       song.play()
     }else{
       song.pause()
@@ -469,13 +525,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
     }
   })
 
-  $('#song1').click((e) => {
-    currentSongID = 1;
-  })
-
-  $('#song2').click((e) => {
-    currentSongID = 2;
-  })
 
 
   $('body').on('keydown', (e)=>{
@@ -503,17 +552,29 @@ document.addEventListener('DOMContentLoaded', ()=> {
   var note1 = new createjs.Shape();
   note1.graphics.beginFill("#9cdaff")
                .drawEllipse(450, 350, 25, 20)
+  var char1 = new createjs.Text("J", "18px Arial", "#9cdaff")
+  char1.x = 456;
+  char1.y = 375;
   var note2 = new createjs.Shape();
   note2.graphics.beginFill("#c568a5")
                .drawEllipse(500, 350, 25, 20)
+  var char2 = new createjs.Text("K", "18px Arial", "#c568a5")
+  char2.x = 505;
+  char2.y = 375;
   var note3 = new createjs.Shape();
   note3.graphics.beginFill("#ffd265")
                .drawEllipse(550, 350, 25, 20)
+  var char3 = new createjs.Text("L", "18px Arial", "#ffd265")
+  char3.x = 557;
+  char3.y = 375;
   var note4 = new createjs.Shape();
   note4.graphics.beginFill("#bcff7c")
                .drawEllipse(600, 350, 25, 20)
+  var char4 = new createjs.Text(";", "18px Arial", "#bcff7c")
+  char4.x = 609;
+  char4.y = 373 ;
 
-stage.addChild(note1, note2, note3, note4)
+stage.addChild(note1, note2, note3, note4, char1, char2, char3, char4)
 
 
   createjs.Ticker.setFPS(55);
@@ -537,19 +598,21 @@ stage.addChild(note1, note2, note3, note4)
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-
+const Feedback = __webpack_require__(1)
 class StreakBar {
 
-  constructor(){
+  constructor(stage){
+    this.feedback = new Feedback(stage)
     this.streak = 0;
     this.update = this.update.bind(this);
+
   }
 
   plus(){
     this.streak += 1;
-    $("#streak").html(this.streak);
+    // $("#streak").html(this.streak);
     this.update();
   }
 
@@ -562,11 +625,15 @@ class StreakBar {
       $("body").css({"background": `#ffd265`});
       $(".streak-container").css({"border":"2px solid #ffd265"})
     }
+    if(this.streak === 9) {
+      this.feedback.show();
+    }
   }
 
   clear(){
     this.streak = 0;
-    $("#streak").html(0);
+    this.feedback.hide();
+    // $("#streak").html(0);
     $(".streak-bar").css({"width": `0%`});
     $("body").css({"background": `#6e9298`});
     $(".streak-container").css({"border":"2px solid #aaa"})
