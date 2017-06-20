@@ -4,4 +4,4 @@
 
 to play use the keys: "j", "k", "l", ";"
 
-[funkydancer]: breno.space/FunkyDancer/
+[funkydancer]: https://friskyb.github.io/FunkyDancer/
