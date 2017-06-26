@@ -1,6 +1,6 @@
 ## Funky Dancer
 
-[Live link][Funkydancer] is a music rhythm game reminiscent of guitar hero and dance dance revolution.  The user selects the song they want to play and music notes corresponding to dance moves start scrolling down the screen.  The user then has to strike to correct note as they reach the bottom.  The user's correct note streak is tracked and if they hit 10 notes in a row they are awarded funky status.
+[Funkydancer][Funkydancer] is a music rhythm game reminiscent of guitar hero and dance dance revolution.  The user selects the song they want to play and music notes corresponding to dance moves start scrolling down the screen.  The user then has to strike to correct note as they reach the bottom.  The user's correct note streak is tracked and if they hit 10 notes in a row they are awarded funky status.
 
 #### Game Mechanics
 
@@ -37,7 +37,9 @@ The notes are rendered on the screen one second before they are played; the amou
 The user receives feedback as they play through a song:
 
 At the beginning and end of a song, the MC talks to the user.
+
 When a wrong note is hit, they are told "NO".
+
 If a 10 point streak is achieved, funky status is reached and displayed.
 
 [funkydancer]: https://friskyb.github.io/FunkyDancer/
