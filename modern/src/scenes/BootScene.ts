@@ -1,9 +1,6 @@
 import Phaser from 'phaser';
 import { Theme } from '../theme';
 
-// First scene of the rewrite: proves the Phaser/Vite pipeline works
-// end to end. Real game states (menu, song select, gameplay, results)
-// replace this as the plan's later phases land.
 export class BootScene extends Phaser.Scene {
   constructor() {
     super('boot');
@@ -31,5 +28,24 @@ export class BootScene extends Phaser.Scene {
         color: '#ffffff',
       })
       .setOrigin(0.5);
+
+    const prompt = this.add
+      .text(width / 2, height / 2 + 90, 'Click or press any key to play', {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '16px',
+        color: '#ffd265',
+      })
+      .setOrigin(0.5);
+
+    this.tweens.add({
+      targets: prompt,
+      alpha: 0.3,
+      duration: 700,
+      yoyo: true,
+      repeat: -1,
+    });
+
+    this.input.keyboard?.once('keydown', () => this.scene.start('gameplay'));
+    this.input.once('pointerdown', () => this.scene.start('gameplay'));
   }
 }

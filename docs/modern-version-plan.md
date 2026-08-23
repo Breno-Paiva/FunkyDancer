@@ -147,8 +147,20 @@ site with personal local high scores only.
    clean, boot scene verified rendering with zero console errors.
    Deployment path resolved (commit `dist`, see above). Toggle stays
    on "Coming Soon" until there's an actual playable milestone.
-2. **Core feel** — timing tiers, combo scoring, results screen,
-   correctness-driven dancer animation, countdown.
+2. **Core feel** — ✅ done for the "Catz" chart: Perfect/Good/Miss
+   timing tiers (±60ms / ±140ms, tunable in `GameplayScene.ts`),
+   combo-scaled scoring (multiplier +1x per 10 combo, capped at 5x),
+   a 3-2-1-GO countdown, correctness-driven dancer animation (only
+   plays a dance move on an actual hit, not any keypress — fixes the
+   gap noted in the original plan), and a results screen (score,
+   accuracy%, max combo, a letter grade, perfect/good/miss breakdown).
+   Verified with a real (non-mocked) playthrough — timed keypresses
+   against the actual chart via Playwright, confirmed correct tier
+   detection, scoring, miss handling, and the results transition, zero
+   console errors. One deliberate design change from Classic: a
+   keypress with no note nearby is now just ignored rather than
+   triggering a "wrong" penalty — only a note that actually scrolls
+   past unhit counts as a miss.
 3. **Content pipeline** — onset-detection script, at least one new
    charted song, JSON chart format.
 4. **Polish** — lane UI, particle/hit effects, song select, settings
@@ -162,10 +174,13 @@ site with personal local high scores only.
 ## Remaining Open Questions
 
 1. Difficulty levels — worth building, or one fixed chart per song is fine?
-2. Results screen — what should it actually show?
-3. More songs — specific tracks in mind, or want suggestions?
-4. Carry the two Classic songs/charts into Modern, or start with new content?
-5. Visual direction — a specific reference/style, or want me to propose one?
-6. Accessibility — build in from the start, or address in a later pass?
-7. Keep the "AJ" MC voice-line bits and current comedic tone, or
+2. More songs — specific tracks in mind, or want suggestions?
+3. Carry the two Classic songs/charts into Modern permanently (the
+   "Catz" chart/audio is already in there as the build-out target for
+   Core feel — still fair game to swap out for new content)?
+4. Visual direction — a specific reference/style, or want me to propose
+   one? (Gameplay so far reuses Classic's palette and the dancer sprite
+   sheet as a placeholder — real "visual polish" phase work is still ahead.)
+5. Accessibility — build in from the start, or address in a later pass?
+6. Keep the "AJ" MC voice-line bits and current comedic tone, or
    rethink that part of the identity for the modern version?
