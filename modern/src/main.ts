@@ -14,6 +14,9 @@ const config: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
+  input: {
+    activePointers: 4, // one per lane, so chords/near-simultaneous taps all register
+  },
   scene: [MenuScene, GameplayScene, ResultsScene],
 };
 

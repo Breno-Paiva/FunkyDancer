@@ -174,7 +174,17 @@ site with personal local high scores only.
    Menu → Gameplay → Results → Menu. Settings menu (key remapping,
    audio/visual offset calibration) and a real song-select UI (only
    matters once there's a second song) are still ahead.
-5. **Mobile** — touch input layout, responsive canvas sizing.
+5. **Mobile** — ✅ done: a full-height tap zone per lane (far more
+   forgiving than the small target marker), immediate tap-ripple
+   feedback on every touch regardless of hit/miss, multi-touch enabled
+   (up to 4 simultaneous pointers, for future chord notes), and a
+   landscape-orientation prompt (this genre wants landscape; portrait
+   would just letterbox the game tiny). Also hardened touch handling
+   in `index.html` — disabled pinch-zoom/double-tap-zoom/pull-to-refresh
+   so rapid tapping doesn't fight the browser. Verified with real touch
+   emulation (Playwright + iPhone 13 device profile, both orientations):
+   rotate prompt shows/hides correctly, touch taps drive real hit
+   detection, zero console errors.
 6. **Reach** — difficulty levels, accessibility pass, in-app charting
    tool, local high scores.
 

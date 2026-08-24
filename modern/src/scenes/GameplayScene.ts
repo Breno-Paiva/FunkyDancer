@@ -144,6 +144,14 @@ export class GameplayScene extends Phaser.Scene {
           color: '#ffffff',
         })
         .setOrigin(0.5);
+
+      // Full-height tap zone per lane - far more forgiving to tap than the
+      // small target marker, matching how touch rhythm games handle input.
+      const zone = this.add.zone(cfg.x, 250, 140, 500).setInteractive();
+      zone.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        this.showTapRipple(pointer.x, pointer.y, cfg.color);
+        this.handleKeyPress(cfg.lane);
+      });
     }
   }
 
@@ -331,6 +339,17 @@ export class GameplayScene extends Phaser.Scene {
       alpha: 0,
       delay: 500,
       duration: 400,
+    });
+  }
+
+  private showTapRipple(x: number, y: number, color: number): void {
+    const ripple = this.add.circle(x, y, 10, color, 0.5);
+    this.tweens.add({
+      targets: ripple,
+      radius: 34,
+      alpha: 0,
+      duration: 250,
+      onComplete: () => ripple.destroy(),
     });
   }
 
