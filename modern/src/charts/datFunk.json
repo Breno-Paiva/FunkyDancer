@@ -1,0 +1,353 @@
+{
+  "id": "datFunk",
+  "title": "Dat Funk",
+  "audioKey": "datFunk",
+  "audioPath": "audio/datFunk.m4a",
+  "leadTime": 1.5,
+  "notes": [
+    {
+      "time": 1.72,
+      "lane": 1
+    },
+    {
+      "time": 2.16,
+      "lane": 2
+    },
+    {
+      "time": 2.8,
+      "lane": 1
+    },
+    {
+      "time": 3.24,
+      "lane": 2
+    },
+    {
+      "time": 3.88,
+      "lane": 1
+    },
+    {
+      "time": 4.32,
+      "lane": 2
+    },
+    {
+      "time": 4.96,
+      "lane": 1
+    },
+    {
+      "time": 5.4,
+      "lane": 2
+    },
+    {
+      "time": 6.04,
+      "lane": 1
+    },
+    {
+      "time": 6.48,
+      "lane": 2
+    },
+    {
+      "time": 7.02,
+      "lane": 3
+    },
+    {
+      "time": 7.56,
+      "lane": 3
+    },
+    {
+      "time": 9.72,
+      "lane": 1
+    },
+    {
+      "time": 10.26,
+      "lane": 1
+    },
+    {
+      "time": 10.8,
+      "lane": 2
+    },
+    {
+      "time": 11.34,
+      "lane": 3
+    },
+    {
+      "time": 11.88,
+      "lane": 3
+    },
+    {
+      "time": 12.42,
+      "lane": 1
+    },
+    {
+      "time": 12.96,
+      "lane": 2
+    },
+    {
+      "time": 13.5,
+      "lane": 3
+    },
+    {
+      "time": 14.04,
+      "lane": 3
+    },
+    {
+      "time": 14.58,
+      "lane": 1
+    },
+    {
+      "time": 15.12,
+      "lane": 2
+    },
+    {
+      "time": 15.66,
+      "lane": 3
+    },
+    {
+      "time": 16.2,
+      "lane": 3
+    },
+    {
+      "time": 16.74,
+      "lane": 4
+    },
+    {
+      "time": 17.28,
+      "lane": 4
+    },
+    {
+      "time": 17.82,
+      "lane": 4
+    },
+    {
+      "time": 18.36,
+      "lane": 4
+    },
+    {
+      "time": 19.44,
+      "lane": 1
+    },
+    {
+      "time": 19.98,
+      "lane": 1
+    },
+    {
+      "time": 20.52,
+      "lane": 1
+    },
+    {
+      "time": 22.6,
+      "lane": 1
+    },
+    {
+      "time": 23.14,
+      "lane": 1
+    },
+    {
+      "time": 23.66,
+      "lane": 2
+    },
+    {
+      "time": 24.76,
+      "lane": 1
+    },
+    {
+      "time": 25.3,
+      "lane": 1
+    },
+    {
+      "time": 25.82,
+      "lane": 2
+    },
+    {
+      "time": 26.92,
+      "lane": 1
+    },
+    {
+      "time": 27.45,
+      "lane": 1
+    },
+    {
+      "time": 27.98,
+      "lane": 2
+    },
+    {
+      "time": 28.9,
+      "lane": 4
+    },
+    {
+      "time": 29.98,
+      "lane": 4
+    },
+    {
+      "time": 31.32,
+      "lane": 3
+    },
+    {
+      "time": 31.86,
+      "lane": 2
+    },
+    {
+      "time": 32.13,
+      "lane": 1
+    },
+    {
+      "time": 32.4,
+      "lane": 1
+    },
+    {
+      "time": 33.48,
+      "lane": 1
+    },
+    {
+      "time": 34.02,
+      "lane": 1
+    },
+    {
+      "time": 34.36,
+      "lane": 2
+    },
+    {
+      "time": 37.45,
+      "lane": 4
+    },
+    {
+      "time": 37.7,
+      "lane": 3
+    },
+    {
+      "time": 37.95,
+      "lane": 2
+    },
+    {
+      "time": 38.2,
+      "lane": 1
+    },
+    {
+      "time": 38.45,
+      "lane": 2
+    },
+    {
+      "time": 38.75,
+      "lane": 1
+    },
+    {
+      "time": 39.05,
+      "lane": 1
+    },
+    {
+      "time": 41.58,
+      "lane": 3
+    },
+    {
+      "time": 42.12,
+      "lane": 2
+    },
+    {
+      "time": 42.66,
+      "lane": 1
+    },
+    {
+      "time": 43.2,
+      "lane": 2
+    },
+    {
+      "time": 44.28,
+      "lane": 1
+    },
+    {
+      "time": 44.82,
+      "lane": 1
+    },
+    {
+      "time": 45.36,
+      "lane": 2
+    },
+    {
+      "time": 46.34,
+      "lane": 1
+    },
+    {
+      "time": 46.88,
+      "lane": 1
+    },
+    {
+      "time": 47.42,
+      "lane": 2
+    },
+    {
+      "time": 48.5,
+      "lane": 1
+    },
+    {
+      "time": 49.04,
+      "lane": 1
+    },
+    {
+      "time": 49.58,
+      "lane": 3
+    },
+    {
+      "time": 50.66,
+      "lane": 4
+    },
+    {
+      "time": 51.74,
+      "lane": 4
+    },
+    {
+      "time": 52.8,
+      "lane": 1
+    },
+    {
+      "time": 53.32,
+      "lane": 2
+    },
+    {
+      "time": 53.88,
+      "lane": 1
+    },
+    {
+      "time": 54.84,
+      "lane": 3
+    },
+    {
+      "time": 55.38,
+      "lane": 3
+    },
+    {
+      "time": 55.92,
+      "lane": 2
+    },
+    {
+      "time": 57,
+      "lane": 2
+    },
+    {
+      "time": 57.54,
+      "lane": 2
+    },
+    {
+      "time": 58.08,
+      "lane": 1
+    },
+    {
+      "time": 58.86,
+      "lane": 2
+    },
+    {
+      "time": 59.1,
+      "lane": 1
+    },
+    {
+      "time": 59.37,
+      "lane": 3
+    },
+    {
+      "time": 59.64,
+      "lane": 2
+    },
+    {
+      "time": 60.2,
+      "lane": 4
+    }
+  ]
+}

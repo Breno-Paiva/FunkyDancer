@@ -1,6 +1,11 @@
 import Phaser from 'phaser';
 import { Theme } from '../theme';
 import { createMuteButton } from '../ui/muteButton';
+import { CHARTS } from '../charts';
+
+const CARD_COLORS = [Theme.pink, Theme.blue, Theme.yellow, Theme.green];
+const CARD_WIDTH = 220;
+const CARD_GAP = 24;
 
 export class MenuScene extends Phaser.Scene {
   constructor() {
@@ -30,52 +35,47 @@ export class MenuScene extends Phaser.Scene {
 
     createMuteButton(this, 780, 16);
 
-    this.buildSongCard(250, 300, {
-      title: 'Catz',
-      subtitle: 'Press J, K, L, ;',
-      color: Theme.pink,
-      enabled: true,
-      onSelect: () => this.scene.start('gameplay'),
-    });
+    const spacing = CARD_WIDTH + CARD_GAP;
+    const totalWidth = CHARTS.length * CARD_WIDTH + (CHARTS.length - 1) * CARD_GAP;
+    const startX = 400 - totalWidth / 2 + CARD_WIDTH / 2;
 
-    this.buildSongCard(550, 300, {
-      title: '???',
-      subtitle: 'More songs coming soon',
-      color: Theme.blue,
-      enabled: false,
+    CHARTS.forEach((chart, i) => {
+      this.buildSongCard(startX + i * spacing, 300, {
+        title: chart.title,
+        subtitle: `${chart.notes.length} notes`,
+        color: CARD_COLORS[i % CARD_COLORS.length],
+        onSelect: () => this.scene.start('gameplay', { chartId: chart.id }),
+      });
     });
   }
 
   private buildSongCard(
     x: number,
     y: number,
-    opts: { title: string; subtitle: string; color: number; enabled: boolean; onSelect?: () => void },
+    opts: { title: string; subtitle: string; color: number; onSelect: () => void },
   ): void {
-    const card = this.add.rectangle(x, y, 260, 140, 0x2a3d40, opts.enabled ? 0.7 : 0.35);
-    card.setStrokeStyle(3, opts.color, opts.enabled ? 1 : 0.4);
+    const card = this.add.rectangle(x, y, CARD_WIDTH, 140, 0x2a3d40, 0.7);
+    card.setStrokeStyle(3, opts.color, 1);
 
     this.add
       .text(x, y - 20, opts.title, {
         fontFamily: 'Georgia, serif',
-        fontSize: '28px',
-        color: opts.enabled ? '#ffffff' : '#9fb0b3',
+        fontSize: '26px',
+        color: '#ffffff',
       })
       .setOrigin(0.5);
 
     this.add
-      .text(x, y + 20, opts.subtitle, {
+      .text(x, y + 24, opts.subtitle, {
         fontFamily: 'Arial, sans-serif',
         fontSize: '13px',
-        color: opts.enabled ? '#ffd265' : '#7f9093',
+        color: '#ffd265',
       })
       .setOrigin(0.5);
 
-    if (opts.enabled && opts.onSelect) {
-      card.setInteractive({ useHandCursor: true });
-      card.on('pointerover', () => card.setFillStyle(0x2a3d40, 0.9));
-      card.on('pointerout', () => card.setFillStyle(0x2a3d40, 0.7));
-      card.on('pointerdown', opts.onSelect);
-      this.input.keyboard?.once('keydown-ENTER', opts.onSelect);
-    }
+    card.setInteractive({ useHandCursor: true });
+    card.on('pointerover', () => card.setFillStyle(0x2a3d40, 0.9));
+    card.on('pointerout', () => card.setFillStyle(0x2a3d40, 0.7));
+    card.on('pointerdown', opts.onSelect);
   }
 }

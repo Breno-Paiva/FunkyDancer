@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { Theme } from '../theme';
 import { LANES, laneConfig } from '../lanes';
-import { catzChart } from '../charts/catz';
+import { getChart } from '../charts';
 import type { Chart, ChartNote, Lane } from '../charts/types';
 import type { GameStats } from '../types';
 import { createMuteButton } from '../ui/muteButton';
@@ -27,7 +27,7 @@ interface RuntimeNote extends ChartNote {
 type PlayState = 'counting' | 'playing' | 'ended';
 
 export class GameplayScene extends Phaser.Scene {
-  private chart: Chart = catzChart;
+  private chart!: Chart;
   private state: PlayState = 'counting';
 
   private runtimeNotes: RuntimeNote[] = [];
@@ -51,6 +51,10 @@ export class GameplayScene extends Phaser.Scene {
 
   constructor() {
     super('gameplay');
+  }
+
+  init(data: { chartId: string }): void {
+    this.chart = getChart(data.chartId);
   }
 
   preload(): void {

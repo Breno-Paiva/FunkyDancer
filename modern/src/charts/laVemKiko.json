@@ -1,0 +1,229 @@
+{
+  "id": "laVemKiko",
+  "title": "La Vem Kiko",
+  "audioKey": "laVemKiko",
+  "audioPath": "audio/laVemKiko.mp3",
+  "leadTime": 1.5,
+  "notes": [
+    {
+      "time": 0.279,
+      "lane": 1
+    },
+    {
+      "time": 1.057,
+      "lane": 2
+    },
+    {
+      "time": 1.358,
+      "lane": 3
+    },
+    {
+      "time": 1.811,
+      "lane": 2
+    },
+    {
+      "time": 2.891,
+      "lane": 1
+    },
+    {
+      "time": 3.413,
+      "lane": 2
+    },
+    {
+      "time": 4.191,
+      "lane": 4
+    },
+    {
+      "time": 5.213,
+      "lane": 2
+    },
+    {
+      "time": 5.968,
+      "lane": 1
+    },
+    {
+      "time": 6.281,
+      "lane": 2
+    },
+    {
+      "time": 7.024,
+      "lane": 1
+    },
+    {
+      "time": 8.359,
+      "lane": 2
+    },
+    {
+      "time": 9.404,
+      "lane": 1
+    },
+    {
+      "time": 10.194,
+      "lane": 2
+    },
+    {
+      "time": 10.635,
+      "lane": 1
+    },
+    {
+      "time": 11.227,
+      "lane": 3
+    },
+    {
+      "time": 11.749,
+      "lane": 1
+    },
+    {
+      "time": 12.272,
+      "lane": 3
+    },
+    {
+      "time": 13.328,
+      "lane": 3
+    },
+    {
+      "time": 13.839,
+      "lane": 2
+    },
+    {
+      "time": 14.629,
+      "lane": 1
+    },
+    {
+      "time": 15.406,
+      "lane": 2
+    },
+    {
+      "time": 15.94,
+      "lane": 4
+    },
+    {
+      "time": 16.451,
+      "lane": 2
+    },
+    {
+      "time": 16.927,
+      "lane": 1
+    },
+    {
+      "time": 17.496,
+      "lane": 2
+    },
+    {
+      "time": 18.274,
+      "lane": 1
+    },
+    {
+      "time": 19.052,
+      "lane": 3
+    },
+    {
+      "time": 19.586,
+      "lane": 3
+    },
+    {
+      "time": 20.108,
+      "lane": 2
+    },
+    {
+      "time": 20.584,
+      "lane": 1
+    },
+    {
+      "time": 21.119,
+      "lane": 2
+    },
+    {
+      "time": 21.676,
+      "lane": 3
+    },
+    {
+      "time": 22.442,
+      "lane": 2
+    },
+    {
+      "time": 23.208,
+      "lane": 1
+    },
+    {
+      "time": 23.754,
+      "lane": 4
+    },
+    {
+      "time": 24.543,
+      "lane": 1
+    },
+    {
+      "time": 25.321,
+      "lane": 2
+    },
+    {
+      "time": 25.844,
+      "lane": 1
+    },
+    {
+      "time": 26.355,
+      "lane": 2
+    },
+    {
+      "time": 26.877,
+      "lane": 3
+    },
+    {
+      "time": 27.411,
+      "lane": 2
+    },
+    {
+      "time": 27.887,
+      "lane": 1
+    },
+    {
+      "time": 28.711,
+      "lane": 4
+    },
+    {
+      "time": 29.199,
+      "lane": 1
+    },
+    {
+      "time": 30.279,
+      "lane": 4
+    },
+    {
+      "time": 31.01,
+      "lane": 1
+    },
+    {
+      "time": 31.579,
+      "lane": 4
+    },
+    {
+      "time": 32.357,
+      "lane": 3
+    },
+    {
+      "time": 33.146,
+      "lane": 2
+    },
+    {
+      "time": 33.669,
+      "lane": 3
+    },
+    {
+      "time": 34.435,
+      "lane": 2
+    },
+    {
+      "time": 34.76,
+      "lane": 3
+    },
+    {
+      "time": 35.225,
+      "lane": 2
+    },
+    {
+      "time": 35.759,
+      "lane": 1
+    }
+  ]
+}

@@ -161,8 +161,20 @@ site with personal local high scores only.
    keypress with no note nearby is now just ignored rather than
    triggering a "wrong" penalty — only a note that actually scrolls
    past unhit counts as a miss.
-3. **Content pipeline** — onset-detection script, at least one new
-   charted song, JSON chart format.
+3. **Content pipeline** — ✅ done: `modern/tools/autochart/` is an
+   onset-detection script (Python + librosa) that generates a
+   first-draft chart JSON from any audio file — see its README. All
+   three charts now live as plain JSON (`src/charts/*.json`, loaded
+   through `src/charts/index.ts`'s `CHARTS` registry) instead of
+   embedded in game logic. Roster is now 3 songs: **Catz** (kept
+   permanently), **Dat Funk** (Classic's second song, hand-charted,
+   ported over — ~86 notes), and **La Vem Kiko** (new content,
+   auto-charted from scratch — 55 notes). Menu now generates a real
+   song-select card per chart instead of one hardcoded song. The
+   auto-chart for La Vem Kiko is a first draft only — timing/lane
+   choices came from onset detection, not a human ear, so it should
+   be played and adjusted before treating it as finished (this is by
+   design — see Non-Goals).
 4. **Polish** — ✅ first pass done: a Menu scene (replaces the old bare
    "click to start" Boot screen) with a Catz song card plus a locked
    "??? — more songs coming soon" placeholder card, echoing the
@@ -193,13 +205,12 @@ site with personal local high scores only.
 ## Remaining Open Questions
 
 1. Difficulty levels — worth building, or one fixed chart per song is fine?
-2. More songs — specific tracks in mind, or want suggestions?
-3. Carry the two Classic songs/charts into Modern permanently (the
-   "Catz" chart/audio is already in there as the build-out target for
-   Core feel — still fair game to swap out for new content)?
-4. Visual direction — a specific reference/style, or want me to propose
+2. Visual direction — a specific reference/style, or want me to propose
    one? (Gameplay so far reuses Classic's palette and the dancer sprite
    sheet as a placeholder — real "visual polish" phase work is still ahead.)
-5. Accessibility — build in from the start, or address in a later pass?
-6. Keep the "AJ" MC voice-line bits and current comedic tone, or
+3. Accessibility — build in from the start, or address in a later pass?
+4. Keep the "AJ" MC voice-line bits and current comedic tone, or
    rethink that part of the identity for the modern version?
+5. La Vem Kiko's chart is a first draft straight out of `autochart.py`,
+   not yet listened-to-and-adjusted — want to review/tune it, or is
+   the auto-generated draft fine to ship as-is for now?
