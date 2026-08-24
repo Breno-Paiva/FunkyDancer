@@ -16,6 +16,9 @@ export class ResultsScene extends Phaser.Scene {
   }
 
   create(stats: GameStats): void {
+    const w = this.scale.width;
+    const h = this.scale.height;
+
     this.cameras.main.setBackgroundColor(Theme.body);
 
     const accuracy = stats.totalNotes > 0
@@ -24,7 +27,7 @@ export class ResultsScene extends Phaser.Scene {
     const grade = gradeFor(accuracy);
 
     this.add
-      .text(400, 60, stats.chartTitle, {
+      .text(w / 2, h * 0.12, stats.chartTitle, {
         fontFamily: 'Georgia, serif',
         fontSize: '28px',
         color: '#ffffff',
@@ -32,7 +35,7 @@ export class ResultsScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(400, 150, grade, {
+      .text(w / 2, h * 0.3, grade, {
         fontFamily: 'Georgia, serif',
         fontSize: '96px',
         color: '#ffffff',
@@ -49,7 +52,7 @@ export class ResultsScene extends Phaser.Scene {
     ];
 
     this.add
-      .text(400, 290, lines.join('\n'), {
+      .text(w / 2, h * 0.58, lines.join('\n'), {
         fontFamily: 'Arial, sans-serif',
         fontSize: '18px',
         color: '#ffffff',
@@ -59,7 +62,7 @@ export class ResultsScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     const retry = this.add
-      .text(400, 440, 'Press any key to return to the menu', {
+      .text(w / 2, h * 0.88, 'Press any key to return to the menu', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '16px',
         color: '#ffd265',

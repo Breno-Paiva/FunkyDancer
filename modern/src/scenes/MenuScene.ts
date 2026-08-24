@@ -4,8 +4,10 @@ import { createMuteButton } from '../ui/muteButton';
 import { CHARTS } from '../charts';
 
 const CARD_COLORS = [Theme.pink, Theme.blue, Theme.yellow, Theme.green];
-const CARD_WIDTH = 220;
+const CARD_HEIGHT = 140;
 const CARD_GAP = 24;
+const SIDE_MARGIN = 40;
+const MAX_CARD_WIDTH = 220;
 
 export class MenuScene extends Phaser.Scene {
   constructor() {
@@ -13,10 +15,13 @@ export class MenuScene extends Phaser.Scene {
   }
 
   create(): void {
+    const w = this.scale.width;
+    const h = this.scale.height;
+
     this.cameras.main.setBackgroundColor(Theme.body);
 
     this.add
-      .text(400, 60, 'FUNKY DANCER', {
+      .text(w / 2, h * 0.1, 'FUNKY DANCER', {
         fontFamily: 'Georgia, serif',
         fontSize: '44px',
         color: '#ffffff',
@@ -26,21 +31,42 @@ export class MenuScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(400, 105, 'Modern Edition — in development', {
+      .text(w / 2, h * 0.18, 'Modern Edition — in development', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '16px',
         color: '#ffffff',
       })
       .setOrigin(0.5);
 
-    createMuteButton(this, 780, 16);
+    createMuteButton(this, w - 20, 16);
 
-    const spacing = CARD_WIDTH + CARD_GAP;
-    const totalWidth = CHARTS.length * CARD_WIDTH + (CHARTS.length - 1) * CARD_GAP;
-    const startX = 400 - totalWidth / 2 + CARD_WIDTH / 2;
+    this.layoutSongCards(w, h);
+  }
+
+  private layoutSongCards(w: number, h: number): void {
+    const availableWidth = w - SIDE_MARGIN * 2;
+    const cardsPerRow = Math.max(1, Math.floor((availableWidth + CARD_GAP) / (MAX_CARD_WIDTH + CARD_GAP)));
+    const cardWidth =
+      cardsPerRow === 1
+        ? Math.min(availableWidth, MAX_CARD_WIDTH * 1.3)
+        : (availableWidth - (cardsPerRow - 1) * CARD_GAP) / cardsPerRow;
+    const rows = Math.ceil(CHARTS.length / cardsPerRow);
+    const gridHeight = rows * CARD_HEIGHT + (rows - 1) * CARD_GAP;
+
+    const contentTop = h * 0.26;
+    const contentBottom = h * 0.96;
+    const startY = contentTop + Math.max(0, (contentBottom - contentTop - gridHeight) / 2) + CARD_HEIGHT / 2;
+
+    const rowWidth = cardsPerRow * cardWidth + (cardsPerRow - 1) * CARD_GAP;
+    const startX = w / 2 - rowWidth / 2 + cardWidth / 2;
 
     CHARTS.forEach((chart, i) => {
-      this.buildSongCard(startX + i * spacing, 300, {
+      const col = i % cardsPerRow;
+      const row = Math.floor(i / cardsPerRow);
+      const x = startX + col * (cardWidth + CARD_GAP);
+      const y = startY + row * (CARD_HEIGHT + CARD_GAP);
+
+      this.buildSongCard(x, y, cardWidth, {
         title: chart.title,
         subtitle: `${chart.notes.length} notes`,
         color: CARD_COLORS[i % CARD_COLORS.length],
@@ -52,9 +78,10 @@ export class MenuScene extends Phaser.Scene {
   private buildSongCard(
     x: number,
     y: number,
+    width: number,
     opts: { title: string; subtitle: string; color: number; onSelect: () => void },
   ): void {
-    const card = this.add.rectangle(x, y, CARD_WIDTH, 140, 0x2a3d40, 0.7);
+    const card = this.add.rectangle(x, y, width, CARD_HEIGHT, 0x2a3d40, 0.7);
     card.setStrokeStyle(3, opts.color, 1);
 
     this.add

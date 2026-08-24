@@ -1,21 +1,37 @@
 import type { Lane } from './charts/types';
 import { Theme } from './theme';
 
-export interface LaneConfig {
+export interface LaneDef {
   lane: Lane;
   key: 'J' | 'K' | 'L' | 'SEMICOLON';
   label: string;
   color: number;
-  x: number;
   danceAnim: 'go' | 'slap' | 'spin' | 'zen';
 }
 
-// x positions centered in an 800px-wide canvas, 150px apart.
-export const LANES: LaneConfig[] = [
-  { lane: 1, key: 'J', label: 'J', color: Theme.blue, x: 175, danceAnim: 'go' },
-  { lane: 2, key: 'K', label: 'K', color: Theme.pink, x: 325, danceAnim: 'slap' },
-  { lane: 3, key: 'L', label: 'L', color: Theme.yellow, x: 475, danceAnim: 'spin' },
-  { lane: 4, key: 'SEMICOLON', label: ';', color: Theme.green, x: 625, danceAnim: 'zen' },
+const LANE_DEFS: LaneDef[] = [
+  { lane: 1, key: 'J', label: 'J', color: Theme.blue, danceAnim: 'go' },
+  { lane: 2, key: 'K', label: 'K', color: Theme.pink, danceAnim: 'slap' },
+  { lane: 3, key: 'L', label: 'L', color: Theme.yellow, danceAnim: 'spin' },
+  { lane: 4, key: 'SEMICOLON', label: ';', color: Theme.green, danceAnim: 'zen' },
 ];
 
-export const laneConfig = (lane: Lane): LaneConfig => LANES[lane - 1];
+export const LANES = LANE_DEFS;
+
+export const laneConfig = (lane: Lane): LaneDef => LANE_DEFS[lane - 1];
+
+// Lane x positions as a fraction of canvas width, so the same layout
+// code works whether the game is running at a wide landscape logical
+// resolution or a narrow portrait one. Ratios reproduce the original
+// hand-tuned 800px-wide landscape layout (margin 175px, spacing 150px)
+// exactly at width=800, and scale proportionally at other widths.
+const MARGIN_RATIO = 175 / 800;
+const SPACING_RATIO = 150 / 800;
+
+export function laneX(lane: Lane, width: number): number {
+  return width * MARGIN_RATIO + width * SPACING_RATIO * (lane - 1);
+}
+
+export function laneSpacing(width: number): number {
+  return width * SPACING_RATIO;
+}

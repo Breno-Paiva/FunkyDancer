@@ -189,14 +189,33 @@ site with personal local high scores only.
 5. **Mobile** — ✅ done: a full-height tap zone per lane (far more
    forgiving than the small target marker), immediate tap-ripple
    feedback on every touch regardless of hit/miss, multi-touch enabled
-   (up to 4 simultaneous pointers, for future chord notes), and a
-   landscape-orientation prompt (this genre wants landscape; portrait
-   would just letterbox the game tiny). Also hardened touch handling
-   in `index.html` — disabled pinch-zoom/double-tap-zoom/pull-to-refresh
-   so rapid tapping doesn't fight the browser. Verified with real touch
-   emulation (Playwright + iPhone 13 device profile, both orientations):
-   rotate prompt shows/hides correctly, touch taps drive real hit
-   detection, zero console errors.
+   (up to 4 simultaneous pointers, for future chord notes). Also
+   hardened touch handling in `index.html` — disabled pinch-zoom/
+   double-tap-zoom/pull-to-refresh so rapid tapping doesn't fight the
+   browser.
+
+   **Revised from the original approach**: initially shipped as a
+   landscape-only game with a "rotate your device" prompt blocking
+   portrait, on the assumption that a small letterboxed portrait view
+   was worse than forcing a rotation. Feedback was that forced rotation
+   is exactly the friction to avoid — so this was replaced with a
+   genuinely responsive dual-orientation layout instead: every scene
+   lays itself out proportionally to `this.scale.width/height` rather
+   than hardcoded pixel positions (`src/lanes.ts`'s `laneX()`, the
+   Menu's adaptive song-card grid that reflows from a 3-across row in
+   landscape to a stacked column in portrait, etc.), and `main.ts`
+   picks one of two logical resolutions (800×500 landscape / 450×800
+   portrait) based on device orientation, live-adjusting on rotation.
+   Also fixed a real mobile Safari bug hit along the way: `100vh`
+   sizes to the viewport as if browser chrome (tab/address bar) were
+   hidden, so on a phone the tab bar was cropping the top of the game
+   in landscape — switched to `100dvh`, which tracks the actual
+   visible viewport.
+
+   Verified with real touch + orientation emulation (Playwright,
+   iPhone 13 device profile): portrait and landscape both fully
+   playable via touch, live orientation flip re-lays-out the menu
+   correctly, zero console errors in any configuration.
 6. **Reach** — difficulty levels, accessibility pass, in-app charting
    tool, local high scores.
 

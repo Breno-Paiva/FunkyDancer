@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
 import { Theme } from '../theme';
-import { LANES, laneConfig } from '../lanes';
+import { LANES, laneConfig, laneX, laneSpacing } from '../lanes';
 import { getChart } from '../charts';
 import type { Chart, ChartNote, Lane } from '../charts/types';
 import type { GameStats } from '../types';
 import { createMuteButton } from '../ui/muteButton';
 
-const SPAWN_Y = 40;
-const HIT_Y = 430;
+const SPAWN_Y_RATIO = 40 / 500;
+const HIT_Y_RATIO = 430 / 500;
 const PERFECT_WINDOW = 0.06;
 const GOOD_WINDOW = 0.14;
 const PERFECT_SCORE = 100;
@@ -29,6 +29,10 @@ type PlayState = 'counting' | 'playing' | 'ended';
 export class GameplayScene extends Phaser.Scene {
   private chart!: Chart;
   private state: PlayState = 'counting';
+  private w = 800;
+  private h = 500;
+  private spawnY = 40;
+  private hitY = 430;
 
   private runtimeNotes: RuntimeNote[] = [];
   private laneQueues: Record<Lane, RuntimeNote[]> = { 1: [], 2: [], 3: [], 4: [] };
@@ -66,6 +70,11 @@ export class GameplayScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.w = this.scale.width;
+    this.h = this.scale.height;
+    this.spawnY = this.h * SPAWN_Y_RATIO;
+    this.hitY = this.h * HIT_Y_RATIO;
+
     this.cameras.main.setBackgroundColor(Theme.body);
     this.resetRunState();
     this.buildAnimations();
@@ -75,7 +84,7 @@ export class GameplayScene extends Phaser.Scene {
     this.buildHud();
     this.buildCountdownText();
     this.bindInput();
-    createMuteButton(this, 780, 470);
+    createMuteButton(this, this.w - 20, this.h - 30);
 
     this.startCountdown();
 
@@ -133,16 +142,19 @@ export class GameplayScene extends Phaser.Scene {
   }
 
   private buildLaneVisuals(): void {
-    const bar = this.add.rectangle(400, HIT_Y, 560, 60, 0x2a3d40, 0.5);
+    const bar = this.add.rectangle(this.w / 2, this.hitY, this.w * 0.7, 60, 0x2a3d40, 0.5);
     bar.setStrokeStyle(2, Theme.green, 0.6);
 
+    const spacing = laneSpacing(this.w);
+
     for (const cfg of LANES) {
-      const marker = this.add.circle(cfg.x, HIT_Y, 26, cfg.color, 0.35);
+      const x = laneX(cfg.lane, this.w);
+      const marker = this.add.circle(x, this.hitY, 26, cfg.color, 0.35);
       marker.setStrokeStyle(3, cfg.color, 1);
       this.targetMarkers[cfg.lane] = marker;
 
       this.add
-        .text(cfg.x, HIT_Y, cfg.label === 'SEMICOLON' ? ';' : cfg.label, {
+        .text(x, this.hitY, cfg.label === 'SEMICOLON' ? ';' : cfg.label, {
           fontFamily: 'Georgia, serif',
           fontSize: '20px',
           color: '#ffffff',
@@ -151,7 +163,7 @@ export class GameplayScene extends Phaser.Scene {
 
       // Full-height tap zone per lane - far more forgiving to tap than the
       // small target marker, matching how touch rhythm games handle input.
-      const zone = this.add.zone(cfg.x, 250, 140, 500).setInteractive();
+      const zone = this.add.zone(x, this.h / 2, spacing * 0.9, this.h).setInteractive();
       zone.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
         this.showTapRipple(pointer.x, pointer.y, cfg.color);
         this.handleKeyPress(cfg.lane);
@@ -160,18 +172,18 @@ export class GameplayScene extends Phaser.Scene {
   }
 
   private buildDancer(): void {
-    this.dancer = this.add.sprite(140, 300, 'dancer').setScale(1.2);
+    this.dancer = this.add.sprite(this.w * 0.175, this.h * 0.6, 'dancer').setScale(1.2);
     this.dancer.play('waiting');
   }
 
   private buildHud(): void {
-    this.scoreText = this.add.text(780, 16, 'Score: 0', {
+    this.scoreText = this.add.text(this.w - 20, 16, 'Score: 0', {
       fontFamily: 'Arial, sans-serif',
       fontSize: '20px',
       color: '#ffffff',
     }).setOrigin(1, 0);
 
-    this.comboText = this.add.text(400, 16, '', {
+    this.comboText = this.add.text(this.w / 2, 16, '', {
       fontFamily: 'Arial, sans-serif',
       fontSize: '20px',
       color: '#ffd265',
@@ -180,7 +192,7 @@ export class GameplayScene extends Phaser.Scene {
 
   private buildCountdownText(): void {
     this.countdownText = this.add
-      .text(400, 250, '', {
+      .text(this.w / 2, this.h / 2, '', {
         fontFamily: 'Georgia, serif',
         fontSize: '64px',
         color: '#ffffff',
@@ -190,7 +202,7 @@ export class GameplayScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.funkyBanner = this.add
-      .text(400, 180, 'FUNKY!', {
+      .text(this.w / 2, this.h * 0.36, 'FUNKY!', {
         fontFamily: 'Georgia, serif',
         fontSize: '48px',
         color: '#ffd265',
@@ -258,12 +270,12 @@ export class GameplayScene extends Phaser.Scene {
       if (!note.spawned && audioTime >= note.time - this.chart.leadTime) {
         note.spawned = true;
         const cfg = laneConfig(note.lane);
-        note.sprite = this.add.circle(cfg.x, SPAWN_Y, 22, cfg.color);
+        note.sprite = this.add.circle(laneX(note.lane, this.w), this.spawnY, 22, cfg.color);
       }
 
       if (note.spawned && note.sprite) {
         const progress = (audioTime - (note.time - this.chart.leadTime)) / this.chart.leadTime;
-        note.sprite.y = Phaser.Math.Linear(SPAWN_Y, HIT_Y, Phaser.Math.Clamp(progress, 0, 1));
+        note.sprite.y = Phaser.Math.Linear(this.spawnY, this.hitY, Phaser.Math.Clamp(progress, 0, 1));
 
         if (audioTime > note.time + GOOD_WINDOW) {
           this.resolveNote(note, 'miss');
@@ -282,8 +294,9 @@ export class GameplayScene extends Phaser.Scene {
     }
 
     const cfg = laneConfig(note.lane);
+    const x = laneX(note.lane, this.w);
     this.flashMarker(cfg.lane, tier === 'miss' ? 0xff5b5b : cfg.color);
-    this.showTierPopup(cfg.x, tier);
+    this.showTierPopup(x, tier);
 
     if (tier === 'miss') {
       this.missCount++;
@@ -291,7 +304,7 @@ export class GameplayScene extends Phaser.Scene {
       this.dancer.play('waiting');
     } else {
       this.hitParticles.setParticleTint(cfg.color);
-      this.hitParticles.explode(10, cfg.x, HIT_Y);
+      this.hitParticles.explode(10, x, this.hitY);
 
       const multiplier = Math.min(1 + Math.floor(this.combo / MULTIPLIER_STEP), MULTIPLIER_CAP);
       this.score += (tier === 'perfect' ? PERFECT_SCORE : GOOD_SCORE) * multiplier;
@@ -313,7 +326,7 @@ export class GameplayScene extends Phaser.Scene {
     const label = tier === 'perfect' ? 'PERFECT' : tier === 'good' ? 'GOOD' : 'MISS';
     const color = tier === 'miss' ? '#ff5b5b' : '#ffffff';
     const popup = this.add
-      .text(x, HIT_Y - 40, label, {
+      .text(x, this.hitY - 40, label, {
         fontFamily: 'Arial, sans-serif',
         fontSize: '16px',
         color,
@@ -323,7 +336,7 @@ export class GameplayScene extends Phaser.Scene {
 
     this.tweens.add({
       targets: popup,
-      y: HIT_Y - 80,
+      y: this.hitY - 80,
       alpha: 0,
       duration: 500,
       onComplete: () => popup.destroy(),

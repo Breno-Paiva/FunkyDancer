@@ -18,62 +18,16 @@
       #app {
         display: flex;
         width: 100vw;
-        height: 100vh;
+        height: 100vh; /* fallback for browsers without dvh support */
+        height: 100dvh; /* tracks the *actual* visible viewport, so mobile
+                            Safari's address/tab bar doesn't crop the game */
         align-items: center;
         justify-content: center;
-      }
-      #rotate-prompt {
-        display: none;
-        position: fixed;
-        inset: 0;
-        z-index: 10;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        background: #6e9298;
-        color: #ffffff;
-        font-family: Georgia, serif;
-        text-align: center;
-        padding: 24px;
-        box-sizing: border-box;
-      }
-      #rotate-prompt.visible {
-        display: flex;
-      }
-      #rotate-prompt .icon {
-        font-size: 48px;
-      }
-      #rotate-prompt .title {
-        font-size: 24px;
-      }
-      #rotate-prompt .subtitle {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        color: #ffd265;
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-C_bpRyH8.js"></script>
+    <script type="module" crossorigin src="./assets/index-Ber-gQ7i.js"></script>
   </head>
   <body>
     <div id="app"></div>
-    <div id="rotate-prompt">
-      <div class="icon">🔄</div>
-      <div class="title">Rotate your device</div>
-      <div class="subtitle">Funky Dancer plays best in landscape</div>
-    </div>
-    <script>
-      (function () {
-        var prompt = document.getElementById('rotate-prompt');
-        var isTouch = window.matchMedia('(pointer: coarse)').matches;
-        function update() {
-          var portrait = window.innerHeight > window.innerWidth;
-          prompt.classList.toggle('visible', isTouch && portrait);
-        }
-        update();
-        window.addEventListener('resize', update);
-        window.addEventListener('orientationchange', update);
-      })();
-    </script>
   </body>
 </html>
