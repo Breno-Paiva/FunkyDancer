@@ -2,10 +2,12 @@
   'use strict';
 
   var STORAGE_KEY = 'funkyDancerVersion';
+  var MODERN_SRC = './modern/dist/index.html';
 
   var toggle = document.getElementById('versionToggle');
   var classicVersion = document.getElementById('classic-version');
   var modernVersion = document.getElementById('modern-version');
+  var modernFrame = document.getElementById('modernFrame');
   var announcer = document.getElementById('versionAnnouncer');
 
   if (!toggle || !classicVersion || !modernVersion) return;
@@ -22,7 +24,7 @@
 
     if (announcer) {
       announcer.textContent = isModern
-        ? 'Modern version selected. Coming soon.'
+        ? 'Modern version selected.'
         : 'Classic 2017 version selected.';
     }
 
@@ -33,6 +35,13 @@
       if (playButton && playButton.textContent.trim() === '||') {
         playButton.click();
       }
+    }
+
+    // Load the Modern build into its iframe on first switch, and unload it
+    // (rather than just hiding it) whenever we leave - an offscreen iframe
+    // would otherwise keep its audio/game loop running behind Classic.
+    if (modernFrame) {
+      modernFrame.src = isModern ? MODERN_SRC : 'about:blank';
     }
 
     if (persist) {

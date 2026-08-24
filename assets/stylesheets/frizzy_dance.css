@@ -309,70 +309,43 @@ h3 {
   display: none;
 }
 
-/* ---------- Modern "coming soon" view ---------- */
+/* ---------- Modern view (embedded game) ---------- */
 
-.modern-coming-soon {
+.modern-frame-wrap {
   box-sizing: border-box;
-  width: 100%;
-  max-width: 650px;
-  min-height: 420px;
-  margin: 25px auto 15px;
-  padding: 30px;
-  border: 4px solid #bcff7c;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #9cdaff 0%, aquamarine 45%, #c568a5 100%);
-  box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 0.18);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  width: 100%;
 }
 
-.modern-coming-soon[hidden] {
+.modern-frame-wrap[hidden] {
   display: none;
 }
 
-.modern-coming-soon__card {
-  max-width: 420px;
-  text-align: center;
+.modern-frame {
+  display: block;
+  width: 100%;
+  max-width: 650px;
+  aspect-ratio: 8 / 5;
+  margin: 4px auto 0;
+  border: 4px solid #bcff7c;
+  border-radius: 18px;
+  background: #6e9298;
+  -webkit-box-shadow: 0px 0px 16px 2px rgba(0,0,0,0.18);
+  -moz-box-shadow: 0px 0px 16px 2px rgba(0,0,0,0.18);
+  box-shadow: 0px 0px 16px 2px rgba(0,0,0,0.18);
 }
 
-.modern-coming-soon__icon {
-  font-size: 48px;
-  color: #fff;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, .25);
-  animation: modern-icon-float 2.4s ease-in-out infinite;
-}
-
-@keyframes modern-icon-float {
-  0%, 100% { transform: translateY(0) rotate(-4deg); }
-  50% { transform: translateY(-8px) rotate(4deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .modern-coming-soon__icon {
-    animation: none;
-  }
-}
-
-.modern-coming-soon__card h2 {
-  font-family: 'Indie Flower', cursive;
-  font-size: 42px;
-  margin: 10px 0 14px;
-  color: #fff;
-  text-shadow: 2px 0 0 #944f7b, -2px 0 0 #944f7b, 0 2px 0 #944f7b, 0 -2px 0 #944f7b;
-}
-
-.modern-coming-soon__card p {
+.modern-frame-hint {
   font-family: 'Exo', sans-serif;
-  font-size: 15px;
-  line-height: 1.5;
-  color: #22292b;
-  margin-bottom: 8px;
+  font-size: 12px;
+  opacity: .75;
+  margin-top: 8px;
 }
 
-.modern-coming-soon__hint {
-  font-size: 13px;
-  opacity: .85;
+.modern-frame-hint a {
+  color: #22292b;
 }
 
 /* ---------- Small screens ---------- */
@@ -392,8 +365,9 @@ h3 {
     font-size: 11px;
   }
 
-  .modern-coming-soon__card h2 {
-    font-size: 32px;
+  .modern-frame {
+    aspect-ratio: 9 / 16;
+    max-height: 82vh;
   }
 
   .interface {

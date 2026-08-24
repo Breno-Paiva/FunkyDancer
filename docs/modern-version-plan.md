@@ -56,10 +56,12 @@ a typical Vite project. `npm run build` locally, then commit `dist`
 alongside source. Live path ends up at
 `.../FunkyDancer/modern/dist/index.html` (see `modern/README.md`).
 
-The toggle's "Modern" side stays on "Coming Soon" for now rather than
-linking to the in-progress build — a bare title screen isn't a
-worthwhile thing to send people to yet. Revisit once there's an
-actual playable milestone (end of the "Core feel" phase).
+The toggle's "Modern" side stayed on "Coming Soon" until there was an
+actual playable milestone, per the plan above. That milestone has long
+since passed — the toggle now embeds the real Modern build (via an
+iframe pointing at `modern/dist/index.html`, lazy-loaded on first
+switch and unloaded on the way back to Classic so its audio doesn't
+keep running offscreen) instead of a placeholder card.
 
 ---
 
