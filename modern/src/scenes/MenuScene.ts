@@ -2,9 +2,10 @@ import Phaser from 'phaser';
 import { Theme } from '../theme';
 import { createMuteButton } from '../ui/muteButton';
 import { CHARTS } from '../charts';
+import type { Chart, Difficulty } from '../charts/types';
 
 const CARD_COLORS = [Theme.pink, Theme.blue, Theme.yellow, Theme.green];
-const CARD_HEIGHT = 140;
+const CARD_HEIGHT = 168;
 const CARD_GAP = 24;
 const SIDE_MARGIN = 40;
 const MAX_CARD_WIDTH = 220;
@@ -66,43 +67,75 @@ export class MenuScene extends Phaser.Scene {
       const x = startX + col * (cardWidth + CARD_GAP);
       const y = startY + row * (CARD_HEIGHT + CARD_GAP);
 
-      this.buildSongCard(x, y, cardWidth, {
-        title: chart.title,
-        subtitle: `${chart.notes.length} notes`,
-        color: CARD_COLORS[i % CARD_COLORS.length],
-        onSelect: () => this.scene.start('gameplay', { chartId: chart.id }),
-      });
+      this.buildSongCard(x, y, cardWidth, chart, CARD_COLORS[i % CARD_COLORS.length]);
     });
   }
 
-  private buildSongCard(
+  private buildSongCard(x: number, y: number, width: number, chart: Chart, accent: number): void {
+    const top = y - CARD_HEIGHT / 2;
+
+    const card = this.add.rectangle(x, y, width, CARD_HEIGHT, 0x2a3d40, 0.7);
+    card.setStrokeStyle(3, accent, 1);
+
+    this.add
+      .text(x, top + 32, chart.title, {
+        fontFamily: 'Georgia, serif',
+        fontSize: '24px',
+        color: '#ffffff',
+      })
+      .setOrigin(0.5);
+
+    const btnWidth = (width - 44) / 2;
+    const btnY = top + CARD_HEIGHT - 44;
+
+    this.buildDifficultyButton(x - btnWidth / 2 - 6, btnY, btnWidth, {
+      label: 'FUN',
+      subtitle: `${chart.notes.fun.length} notes`,
+      color: Theme.blue,
+      onSelect: () => this.startGame(chart.id, 'fun'),
+    });
+
+    this.buildDifficultyButton(x + btnWidth / 2 + 6, btnY, btnWidth, {
+      label: 'FUNKY',
+      subtitle: `${chart.notes.funky.length} notes`,
+      color: accent,
+      onSelect: () => this.startGame(chart.id, 'funky'),
+    });
+  }
+
+  private buildDifficultyButton(
     x: number,
     y: number,
     width: number,
-    opts: { title: string; subtitle: string; color: number; onSelect: () => void },
+    opts: { label: string; subtitle: string; color: number; onSelect: () => void },
   ): void {
-    const card = this.add.rectangle(x, y, width, CARD_HEIGHT, 0x2a3d40, 0.7);
-    card.setStrokeStyle(3, opts.color, 1);
+    const btn = this.add.rectangle(x, y, width, 64, 0x1b1f24, 0.85);
+    btn.setStrokeStyle(2, opts.color, 1);
 
     this.add
-      .text(x, y - 20, opts.title, {
+      .text(x, y - 12, opts.label, {
         fontFamily: 'Georgia, serif',
-        fontSize: '26px',
+        fontSize: '16px',
+        fontStyle: 'bold',
         color: '#ffffff',
       })
       .setOrigin(0.5);
 
     this.add
-      .text(x, y + 24, opts.subtitle, {
+      .text(x, y + 12, opts.subtitle, {
         fontFamily: 'Arial, sans-serif',
-        fontSize: '13px',
+        fontSize: '12px',
         color: '#ffd265',
       })
       .setOrigin(0.5);
 
-    card.setInteractive({ useHandCursor: true });
-    card.on('pointerover', () => card.setFillStyle(0x2a3d40, 0.9));
-    card.on('pointerout', () => card.setFillStyle(0x2a3d40, 0.7));
-    card.on('pointerdown', opts.onSelect);
+    btn.setInteractive({ useHandCursor: true });
+    btn.on('pointerover', () => btn.setFillStyle(0x1b1f24, 1));
+    btn.on('pointerout', () => btn.setFillStyle(0x1b1f24, 0.85));
+    btn.on('pointerdown', opts.onSelect);
+  }
+
+  private startGame(chartId: string, difficulty: Difficulty): void {
+    this.scene.start('gameplay', { chartId, difficulty });
   }
 }

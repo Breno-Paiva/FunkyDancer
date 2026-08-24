@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 import { Theme } from '../theme';
-import { LANES, laneConfig, laneX, laneSpacing } from '../lanes';
+import { LANES, laneConfig, laneX, laneSpacing, createLaneShape } from '../lanes';
 import { getChart } from '../charts';
-import type { Chart, ChartNote, Lane } from '../charts/types';
+import type { Chart, ChartNote, Difficulty, Lane } from '../charts/types';
 import type { GameStats } from '../types';
 import { createMuteButton } from '../ui/muteButton';
 
@@ -21,13 +21,14 @@ type HitResult = 'perfect' | 'good' | 'miss';
 interface RuntimeNote extends ChartNote {
   resolved: boolean;
   spawned: boolean;
-  sprite?: Phaser.GameObjects.Arc;
+  sprite?: Phaser.GameObjects.Shape;
 }
 
 type PlayState = 'counting' | 'playing' | 'ended';
 
 export class GameplayScene extends Phaser.Scene {
   private chart!: Chart;
+  private difficulty: Difficulty = 'funky';
   private state: PlayState = 'counting';
   private w = 800;
   private h = 500;
@@ -37,7 +38,7 @@ export class GameplayScene extends Phaser.Scene {
   private runtimeNotes: RuntimeNote[] = [];
   private laneQueues: Record<Lane, RuntimeNote[]> = { 1: [], 2: [], 3: [], 4: [] };
   private laneCursor: Record<Lane, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
-  private targetMarkers: Record<Lane, Phaser.GameObjects.Arc> = {} as Record<Lane, Phaser.GameObjects.Arc>;
+  private targetMarkers: Record<Lane, Phaser.GameObjects.Shape> = {} as Record<Lane, Phaser.GameObjects.Shape>;
 
   private score = 0;
   private combo = 0;
@@ -50,15 +51,17 @@ export class GameplayScene extends Phaser.Scene {
   private comboText!: Phaser.GameObjects.Text;
   private countdownText!: Phaser.GameObjects.Text;
   private funkyBanner!: Phaser.GameObjects.Text;
-  private dancer!: Phaser.GameObjects.Sprite;
+  private comboBarFill!: Phaser.GameObjects.Rectangle;
+  private comboBarWidth = 0;
   private hitParticles!: Phaser.GameObjects.Particles.ParticleEmitter;
 
   constructor() {
     super('gameplay');
   }
 
-  init(data: { chartId: string }): void {
+  init(data: { chartId: string; difficulty: Difficulty }): void {
     this.chart = getChart(data.chartId);
+    this.difficulty = data.difficulty;
   }
 
   preload(): void {
@@ -69,10 +72,6 @@ export class GameplayScene extends Phaser.Scene {
     if (!this.cache.audio.exists('soGood')) {
       this.load.audio('soGood', 'audio/so_good_AJ.m4a');
     }
-    this.load.spritesheet('dancer', 'sprites/dancer_sheet.png', {
-      frameWidth: 110,
-      frameHeight: 128,
-    });
   }
 
   create(): void {
@@ -83,10 +82,8 @@ export class GameplayScene extends Phaser.Scene {
 
     this.cameras.main.setBackgroundColor(Theme.body);
     this.resetRunState();
-    this.buildAnimations();
     this.buildParticles();
     this.buildLaneVisuals();
-    this.buildDancer();
     this.buildHud();
     this.buildCountdownText();
     this.bindInput();
@@ -117,7 +114,8 @@ export class GameplayScene extends Phaser.Scene {
   }
 
   private resetRunState(): void {
-    this.runtimeNotes = this.chart.notes.map((n) => ({ ...n, resolved: false, spawned: false }));
+    const notes = this.chart.notes[this.difficulty];
+    this.runtimeNotes = notes.map((n) => ({ ...n, resolved: false, spawned: false }));
     this.laneQueues = { 1: [], 2: [], 3: [], 4: [] };
     for (const note of this.runtimeNotes) this.laneQueues[note.lane].push(note);
     this.laneCursor = { 1: 0, 2: 0, 3: 0, 4: 0 };
@@ -129,24 +127,6 @@ export class GameplayScene extends Phaser.Scene {
     this.missCount = 0;
   }
 
-  private buildAnimations(): void {
-    const define = (key: string, start: number, end: number, repeat: number) => {
-      if (!this.anims.exists(key)) {
-        this.anims.create({
-          key,
-          frames: this.anims.generateFrameNumbers('dancer', { start, end }),
-          frameRate: 12,
-          repeat,
-        });
-      }
-    };
-    define('waiting', 0, 7, -1);
-    define('slap', 32, 35, 0);
-    define('spin', 48, 55, 0);
-    define('go', 56, 61, 0);
-    define('zen', 72, 79, 0);
-  }
-
   private buildLaneVisuals(): void {
     const bar = this.add.rectangle(this.w / 2, this.hitY, this.w * 0.7, 60, 0x2a3d40, 0.5);
     bar.setStrokeStyle(2, Theme.green, 0.6);
@@ -155,31 +135,26 @@ export class GameplayScene extends Phaser.Scene {
 
     for (const cfg of LANES) {
       const x = laneX(cfg.lane, this.w);
-      const marker = this.add.circle(x, this.hitY, 26, cfg.color, 0.35);
+      const marker = createLaneShape(this, cfg.shape, x, this.hitY, 26, cfg.color, 0.35);
       marker.setStrokeStyle(3, cfg.color, 1);
       this.targetMarkers[cfg.lane] = marker;
 
       this.add
         .text(x, this.hitY, cfg.label === 'SEMICOLON' ? ';' : cfg.label, {
           fontFamily: 'Georgia, serif',
-          fontSize: '20px',
+          fontSize: '24px',
+          fontStyle: 'bold',
           color: '#ffffff',
+          stroke: '#000000',
+          strokeThickness: 4,
         })
         .setOrigin(0.5);
 
       // Full-height tap zone per lane - far more forgiving to tap than the
       // small target marker, matching how touch rhythm games handle input.
       const zone = this.add.zone(x, this.h / 2, spacing * 0.9, this.h).setInteractive();
-      zone.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-        this.showTapRipple(pointer.x, pointer.y, cfg.color);
-        this.handleKeyPress(cfg.lane);
-      });
+      zone.on('pointerdown', () => this.handleKeyPress(cfg.lane));
     }
-  }
-
-  private buildDancer(): void {
-    this.dancer = this.add.sprite(this.w * 0.175, this.h * 0.6, 'dancer').setScale(1.2);
-    this.dancer.play('waiting');
   }
 
   private buildHud(): void {
@@ -194,6 +169,20 @@ export class GameplayScene extends Phaser.Scene {
       fontSize: '20px',
       color: '#ffd265',
     }).setOrigin(0.5, 0);
+
+    this.buildComboBar();
+  }
+
+  private buildComboBar(): void {
+    this.comboBarWidth = this.w * 0.6;
+    const x = this.w / 2 - this.comboBarWidth / 2;
+    const y = 46;
+
+    this.add.rectangle(x, y, this.comboBarWidth, 8, 0x000000, 0.35).setOrigin(0, 0.5);
+    this.comboBarFill = this.add
+      .rectangle(x, y, this.comboBarWidth, 8, 0xffffff, 0.9)
+      .setOrigin(0, 0.5);
+    this.comboBarFill.setScale(0, 1);
   }
 
   private buildCountdownText(): void {
@@ -227,6 +216,11 @@ export class GameplayScene extends Phaser.Scene {
 
   private handleKeyPress(lane: Lane): void {
     if (this.state !== 'playing') return;
+
+    // Every press gets an immediate visual response at the lane it hit,
+    // regardless of whether it actually resolves a note - keyboard and
+    // touch input both funnel through here, so both get the same feedback.
+    this.showTapRipple(lane);
 
     const queue = this.laneQueues[lane];
     const note = queue[this.laneCursor[lane]];
@@ -277,7 +271,7 @@ export class GameplayScene extends Phaser.Scene {
       if (!note.spawned && audioTime >= note.time - this.chart.leadTime) {
         note.spawned = true;
         const cfg = laneConfig(note.lane);
-        note.sprite = this.add.circle(laneX(note.lane, this.w), this.spawnY, 22, cfg.color);
+        note.sprite = createLaneShape(this, cfg.shape, laneX(note.lane, this.w), this.spawnY, 22, cfg.color);
       }
 
       if (note.spawned && note.sprite) {
@@ -308,7 +302,6 @@ export class GameplayScene extends Phaser.Scene {
     if (tier === 'miss') {
       this.missCount++;
       this.combo = 0;
-      this.dancer.play('waiting');
     } else {
       this.hitParticles.setParticleTint(cfg.color);
       this.hitParticles.explode(10, x, this.hitY);
@@ -319,14 +312,31 @@ export class GameplayScene extends Phaser.Scene {
       this.maxCombo = Math.max(this.maxCombo, this.combo);
       if (tier === 'perfect') this.perfectCount++;
       else this.goodCount++;
-      this.dancer.play(cfg.danceAnim);
-      this.dancer.once('animationcomplete', () => this.dancer.play('waiting'));
 
       if (this.combo > 0 && this.combo % FUNKY_MILESTONE === 0) this.showFunkyBanner();
     }
 
     this.scoreText.setText(`Score: ${this.score}`);
     this.comboText.setText(this.combo > 1 ? `Combo x${this.combo}` : '');
+    this.updateStreakVisuals();
+  }
+
+  private updateStreakVisuals(): void {
+    const progress = this.combo === 0 ? 0 : (((this.combo - 1) % FUNKY_MILESTONE) + 1) / FUNKY_MILESTONE;
+
+    this.tweens.add({
+      targets: this.comboBarFill,
+      scaleX: progress,
+      duration: 150,
+      ease: 'Cubic.Out',
+    });
+
+    const from = Phaser.Display.Color.ValueToColor(Theme.body);
+    const to = Phaser.Display.Color.ValueToColor(Theme.bodyHot);
+    const blended = Phaser.Display.Color.Interpolate.ColorWithColor(from, to, 100, progress * 100);
+    this.cameras.main.setBackgroundColor(
+      Phaser.Display.Color.GetColor(blended.r, blended.g, blended.b),
+    );
   }
 
   private showTierPopup(x: number, tier: HitResult): void {
@@ -366,11 +376,13 @@ export class GameplayScene extends Phaser.Scene {
     });
   }
 
-  private showTapRipple(x: number, y: number, color: number): void {
-    const ripple = this.add.circle(x, y, 10, color, 0.5);
+  private showTapRipple(lane: Lane): void {
+    const cfg = laneConfig(lane);
+    const x = laneX(lane, this.w);
+    const ripple = createLaneShape(this, cfg.shape, x, this.hitY, 10, cfg.color, 0.5);
     this.tweens.add({
       targets: ripple,
-      radius: 34,
+      scale: 2.6,
       alpha: 0,
       duration: 250,
       onComplete: () => ripple.destroy(),
@@ -392,11 +404,12 @@ export class GameplayScene extends Phaser.Scene {
     this.sound.play('soGood');
     const stats: GameStats = {
       chartTitle: this.chart.title,
+      difficulty: this.difficulty,
       score: this.score,
       perfectCount: this.perfectCount,
       goodCount: this.goodCount,
       missCount: this.missCount,
-      totalNotes: this.chart.notes.length,
+      totalNotes: this.chart.notes[this.difficulty].length,
       maxCombo: this.maxCombo,
     };
     this.time.delayedCall(400, () => this.scene.start('results', stats));

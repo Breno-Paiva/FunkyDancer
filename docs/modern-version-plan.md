@@ -220,20 +220,55 @@ site with personal local high scores only.
    iPhone 13 device profile): portrait and landscape both fully
    playable via touch, live orientation flip re-lays-out the menu
    correctly, zero console errors in any configuration.
-6. **Reach** — difficulty levels, accessibility pass, in-app charting
-   tool, local high scores.
+6. **Reach** — difficulty levels ✅ (see Phase 7), accessibility pass,
+   in-app charting tool, local high scores.
+7. **Visual redesign + two difficulties** — ✅ done: dancer sprite and
+   its animation system removed entirely (no replacement art yet, by
+   design — see open question below); background is now a neutral dark
+   placeholder (`Theme.body`) rather than art, and gameplay blends it
+   toward `Theme.bodyHot` as combo builds, driven by a new progress bar
+   under the HUD (`GameplayScene.updateStreakVisuals`) that fills toward
+   the next 10-combo milestone and resets on a miss. Lane target
+   markers and falling notes now use a distinct **shape** per lane
+   (circle/square/triangle/diamond, `lanes.ts`'s `createLaneShape`) on
+   top of color, and every keypress — hit, miss, or stray, keyboard or
+   touch — gets an immediate ripple at its lane (previously only touch
+   got this). `autochart.py` was reworked to emit **two difficulties
+   per chart** (`Chart.notes: { fun, funky }`): fun is quantized to the
+   beat grid, 2 lanes only, tempo-normalized spacing; funky is the full
+   onset-detected chart across all 4 lanes with lane choice from onset
+   strength + spectral brightness, plus repeat-avoidance so the same
+   lane can't fire 3+ times in a row. The tool also now decodes any
+   input format via `ffmpeg` first, fixing an existing bug where `.m4a`
+   couldn't be loaded at all. **All 3 songs were regenerated** through
+   the new tool — this superseded Catz's and Dat Funk's previously
+   hand-tuned charts (not just La Vem Kiko's draft), so all three are
+   now first-draft-by-algorithm and not yet refined by ear (old
+   hand-tuned data is still recoverable from git history if that turns
+   out to matter). Menu song cards now show separate FUN/FUNKY buttons
+   with a live note count per difficulty instead of one card = one
+   play button. Verified via a real timed Playwright playthrough
+   (audio-clock-synced keypresses, not open-loop wall-clock timing) on
+   Catz/funky: 10/10 perfects, correct scoring, funky-milestone banner,
+   miss handling, and background/bar reset all confirmed; menu and
+   gameplay screenshotted in both landscape and portrait; zero console
+   errors throughout.
 
 ---
 
 ## Remaining Open Questions
 
-1. Difficulty levels — worth building, or one fixed chart per song is fine?
-2. Visual direction — a specific reference/style, or want me to propose
-   one? (Gameplay so far reuses Classic's palette and the dancer sprite
-   sheet as a placeholder — real "visual polish" phase work is still ahead.)
+1. ~~Difficulty levels~~ — **decided: built, Fun + Funky per song (Phase 7).**
+2. Visual direction — dancer sprite and background art are now gone
+   pending real replacements (Phase 7); lane shapes/colors are a
+   readable placeholder, not a final style. Real character/background
+   art still needs a direction whenever it's ready to design.
 3. Accessibility — build in from the start, or address in a later pass?
+   (Phase 7's shape-per-lane change is a partial, incidental step
+   toward colorblind support, not a full accessibility pass.)
 4. Keep the "AJ" MC voice-line bits and current comedic tone, or
    rethink that part of the identity for the modern version?
-5. La Vem Kiko's chart is a first draft straight out of `autochart.py`,
-   not yet listened-to-and-adjusted — want to review/tune it, or is
-   the auto-generated draft fine to ship as-is for now?
+5. All 3 charts are now first-draft output straight out of the
+   reworked `autochart.py` (Fun + Funky each), not yet
+   listened-to-and-adjusted by ear — want to review/tune any of them,
+   or is the auto-generated draft fine to keep playing on as-is?

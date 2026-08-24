@@ -1,4 +1,5 @@
 export type Lane = 1 | 2 | 3 | 4;
+export type Difficulty = 'fun' | 'funky';
 
 export interface ChartNote {
   time: number;
@@ -11,5 +12,5 @@ export interface Chart {
   audioKey: string;
   audioPath: string;
   leadTime: number;
-  notes: ChartNote[];
+  notes: Record<Difficulty, ChartNote[]>;
 }

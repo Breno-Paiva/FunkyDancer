@@ -1,11 +1,15 @@
-// Palette carried over from the Classic 2017 edition's stylesheet
-// (assets/stylesheets/frizzy_dance.css) so the Modern build starts
-// visually connected to it rather than from a blank slate.
+// Neutral placeholder palette - the dancer sprite and background art were
+// pulled out to make room for real replacements later (see
+// docs/modern-version-plan.md). `body` is a dark neutral backdrop rather
+// than art; `bodyHot` is what the gameplay background blends toward as a
+// hit streak builds, via GameplayScene's combo bar. Lane colors stay
+// vivid and are paired with a distinct shape per lane so they read
+// without relying on color alone.
 export const Theme = {
-  body: 0x6e9298,
-  green: 0xbcff7c,
-  pink: 0xc568a5,
-  pinkDark: 0x944f7b,
-  yellow: 0xffd265,
-  blue: 0x9cdaff,
+  body: 0x1b1f24,
+  bodyHot: 0x3a1f33,
+  green: 0x7dffb0,
+  pink: 0xff5fa8,
+  yellow: 0xffd23f,
+  blue: 0x4fd8ff,
 } as const;

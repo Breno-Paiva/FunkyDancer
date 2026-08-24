@@ -35,6 +35,14 @@ export class ResultsScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
+      .text(w / 2, h * 0.19, stats.difficulty === 'funky' ? 'FUNKY' : 'FUN', {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '14px',
+        color: '#ffd265',
+      })
+      .setOrigin(0.5);
+
+    this.add
       .text(w / 2, h * 0.3, grade, {
         fontFamily: 'Georgia, serif',
         fontSize: '96px',
