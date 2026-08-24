@@ -63,6 +63,12 @@ export class GameplayScene extends Phaser.Scene {
 
   preload(): void {
     this.load.audio(this.chart.audioKey, this.chart.audioPath);
+    if (!this.cache.audio.exists('shallWe')) {
+      this.load.audio('shallWe', 'audio/shall_we_AJ.m4a');
+    }
+    if (!this.cache.audio.exists('soGood')) {
+      this.load.audio('soGood', 'audio/so_good_AJ.m4a');
+    }
     this.load.spritesheet('dancer', 'sprites/dancer_sheet.png', {
       frameWidth: 110,
       frameHeight: 128,
@@ -236,6 +242,7 @@ export class GameplayScene extends Phaser.Scene {
 
   private startCountdown(): void {
     this.state = 'counting';
+    this.sound.play('shallWe');
 
     const steps = ['3', '2', '1', 'GO!'];
     steps.forEach((label, i) => {
@@ -382,6 +389,7 @@ export class GameplayScene extends Phaser.Scene {
 
   private endSong(): void {
     this.state = 'ended';
+    this.sound.play('soGood');
     const stats: GameStats = {
       chartTitle: this.chart.title,
       score: this.score,

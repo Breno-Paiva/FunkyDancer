@@ -62,7 +62,7 @@ export class ResultsScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     const retry = this.add
-      .text(w / 2, h * 0.88, 'Press any key to return to the menu', {
+      .text(w / 2, h * 0.88, 'Tap anywhere to return to the menu', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '16px',
         color: '#ffd265',
@@ -77,6 +77,8 @@ export class ResultsScene extends Phaser.Scene {
       repeat: -1,
     });
 
-    this.input.keyboard?.once('keydown', () => this.scene.start('menu'));
+    const returnToMenu = () => this.scene.start('menu');
+    this.input.keyboard?.once('keydown', returnToMenu);
+    this.input.once('pointerdown', returnToMenu);
   }
 }
