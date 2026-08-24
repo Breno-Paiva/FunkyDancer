@@ -163,8 +163,17 @@ site with personal local high scores only.
    past unhit counts as a miss.
 3. **Content pipeline** — onset-detection script, at least one new
    charted song, JSON chart format.
-4. **Polish** — lane UI, particle/hit effects, song select, settings
-   menu, volume controls.
+4. **Polish** — ✅ first pass done: a Menu scene (replaces the old bare
+   "click to start" Boot screen) with a Catz song card plus a locked
+   "??? — more songs coming soon" placeholder card, echoing the
+   Classic toggle's own "Coming Soon" theme. Added a persistent
+   Sound On/Off toggle (localStorage-backed, shared across scenes via
+   `src/ui/muteButton.ts`), particle bursts and floating PERFECT/GOOD/
+   MISS text on every hit, and a "FUNKY!" banner at every 10-combo
+   milestone (homage to Classic's streak-9 moment). Flow is now
+   Menu → Gameplay → Results → Menu. Settings menu (key remapping,
+   audio/visual offset calibration) and a real song-select UI (only
+   matters once there's a second song) are still ahead.
 5. **Mobile** — touch input layout, responsive canvas sizing.
 6. **Reach** — difficulty levels, accessibility pass, in-app charting
    tool, local high scores.

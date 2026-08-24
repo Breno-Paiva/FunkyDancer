@@ -59,7 +59,7 @@ export class ResultsScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     const retry = this.add
-      .text(400, 440, 'Press any key to play again', {
+      .text(400, 440, 'Press any key to return to the menu', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '16px',
         color: '#ffd265',
@@ -74,6 +74,6 @@ export class ResultsScene extends Phaser.Scene {
       repeat: -1,
     });
 
-    this.input.keyboard?.once('keydown', () => this.scene.start('gameplay'));
+    this.input.keyboard?.once('keydown', () => this.scene.start('menu'));
   }
 }

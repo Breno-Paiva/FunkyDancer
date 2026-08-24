@@ -4,6 +4,7 @@ import { LANES, laneConfig } from '../lanes';
 import { catzChart } from '../charts/catz';
 import type { Chart, ChartNote, Lane } from '../charts/types';
 import type { GameStats } from '../types';
+import { createMuteButton } from '../ui/muteButton';
 
 const SPAWN_Y = 40;
 const HIT_Y = 430;
@@ -13,6 +14,7 @@ const PERFECT_SCORE = 100;
 const GOOD_SCORE = 50;
 const MULTIPLIER_STEP = 10;
 const MULTIPLIER_CAP = 5;
+const FUNKY_MILESTONE = 10;
 
 type HitResult = 'perfect' | 'good' | 'miss';
 
@@ -22,11 +24,11 @@ interface RuntimeNote extends ChartNote {
   sprite?: Phaser.GameObjects.Arc;
 }
 
-type PlayState = 'waiting' | 'counting' | 'playing' | 'ended';
+type PlayState = 'counting' | 'playing' | 'ended';
 
 export class GameplayScene extends Phaser.Scene {
   private chart: Chart = catzChart;
-  private state: PlayState = 'waiting';
+  private state: PlayState = 'counting';
 
   private runtimeNotes: RuntimeNote[] = [];
   private laneQueues: Record<Lane, RuntimeNote[]> = { 1: [], 2: [], 3: [], 4: [] };
@@ -42,9 +44,10 @@ export class GameplayScene extends Phaser.Scene {
 
   private scoreText!: Phaser.GameObjects.Text;
   private comboText!: Phaser.GameObjects.Text;
-  private promptText!: Phaser.GameObjects.Text;
   private countdownText!: Phaser.GameObjects.Text;
+  private funkyBanner!: Phaser.GameObjects.Text;
   private dancer!: Phaser.GameObjects.Sprite;
+  private hitParticles!: Phaser.GameObjects.Particles.ParticleEmitter;
 
   constructor() {
     super('gameplay');
@@ -62,15 +65,36 @@ export class GameplayScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(Theme.body);
     this.resetRunState();
     this.buildAnimations();
+    this.buildParticles();
     this.buildLaneVisuals();
     this.buildDancer();
     this.buildHud();
-    this.buildStartPrompt();
+    this.buildCountdownText();
     this.bindInput();
+    createMuteButton(this, 780, 470);
+
+    this.startCountdown();
 
     if (new URLSearchParams(location.search).has('debug')) {
       (window as unknown as { __scene: GameplayScene }).__scene = this;
     }
+  }
+
+  private buildParticles(): void {
+    if (!this.textures.exists('particle')) {
+      const g = this.add.graphics();
+      g.fillStyle(0xffffff, 1);
+      g.fillCircle(4, 4, 4);
+      g.generateTexture('particle', 8, 8);
+      g.destroy();
+    }
+    this.hitParticles = this.add.particles(0, 0, 'particle', {
+      lifespan: 350,
+      speed: { min: 60, max: 180 },
+      scale: { start: 1, end: 0 },
+      quantity: 10,
+      emitting: false,
+    });
   }
 
   private resetRunState(): void {
@@ -142,17 +166,7 @@ export class GameplayScene extends Phaser.Scene {
     }).setOrigin(0.5, 0);
   }
 
-  private buildStartPrompt(): void {
-    this.promptText = this.add
-      .text(400, 250, 'Press J, K, L, or ; to start', {
-        fontFamily: 'Georgia, serif',
-        fontSize: '26px',
-        color: '#ffffff',
-        stroke: '#bcff7c',
-        strokeThickness: 4,
-      })
-      .setOrigin(0.5);
-
+  private buildCountdownText(): void {
     this.countdownText = this.add
       .text(400, 250, '', {
         fontFamily: 'Georgia, serif',
@@ -161,8 +175,18 @@ export class GameplayScene extends Phaser.Scene {
         stroke: '#c568a5',
         strokeThickness: 8,
       })
+      .setOrigin(0.5);
+
+    this.funkyBanner = this.add
+      .text(400, 180, 'FUNKY!', {
+        fontFamily: 'Georgia, serif',
+        fontSize: '48px',
+        color: '#ffd265',
+        stroke: '#c568a5',
+        strokeThickness: 6,
+      })
       .setOrigin(0.5)
-      .setVisible(false);
+      .setAlpha(0);
   }
 
   private bindInput(): void {
@@ -172,10 +196,6 @@ export class GameplayScene extends Phaser.Scene {
   }
 
   private handleKeyPress(lane: Lane): void {
-    if (this.state === 'waiting') {
-      this.startCountdown();
-      return;
-    }
     if (this.state !== 'playing') return;
 
     const queue = this.laneQueues[lane];
@@ -192,15 +212,13 @@ export class GameplayScene extends Phaser.Scene {
 
   private startCountdown(): void {
     this.state = 'counting';
-    this.promptText.setVisible(false);
-    this.countdownText.setVisible(true);
 
     const steps = ['3', '2', '1', 'GO!'];
     steps.forEach((label, i) => {
       this.time.delayedCall(i * 700, () => this.countdownText.setText(label));
     });
     this.time.delayedCall(steps.length * 700, () => {
-      this.countdownText.setVisible(false);
+      this.countdownText.setText('');
       this.beginSong();
     });
   }
@@ -253,12 +271,16 @@ export class GameplayScene extends Phaser.Scene {
 
     const cfg = laneConfig(note.lane);
     this.flashMarker(cfg.lane, tier === 'miss' ? 0xff5b5b : cfg.color);
+    this.showTierPopup(cfg.x, tier);
 
     if (tier === 'miss') {
       this.missCount++;
       this.combo = 0;
       this.dancer.play('waiting');
     } else {
+      this.hitParticles.setParticleTint(cfg.color);
+      this.hitParticles.explode(10, cfg.x, HIT_Y);
+
       const multiplier = Math.min(1 + Math.floor(this.combo / MULTIPLIER_STEP), MULTIPLIER_CAP);
       this.score += (tier === 'perfect' ? PERFECT_SCORE : GOOD_SCORE) * multiplier;
       this.combo++;
@@ -267,10 +289,49 @@ export class GameplayScene extends Phaser.Scene {
       else this.goodCount++;
       this.dancer.play(cfg.danceAnim);
       this.dancer.once('animationcomplete', () => this.dancer.play('waiting'));
+
+      if (this.combo > 0 && this.combo % FUNKY_MILESTONE === 0) this.showFunkyBanner();
     }
 
     this.scoreText.setText(`Score: ${this.score}`);
     this.comboText.setText(this.combo > 1 ? `Combo x${this.combo}` : '');
+  }
+
+  private showTierPopup(x: number, tier: HitResult): void {
+    const label = tier === 'perfect' ? 'PERFECT' : tier === 'good' ? 'GOOD' : 'MISS';
+    const color = tier === 'miss' ? '#ff5b5b' : '#ffffff';
+    const popup = this.add
+      .text(x, HIT_Y - 40, label, {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '16px',
+        color,
+        fontStyle: 'bold',
+      })
+      .setOrigin(0.5);
+
+    this.tweens.add({
+      targets: popup,
+      y: HIT_Y - 80,
+      alpha: 0,
+      duration: 500,
+      onComplete: () => popup.destroy(),
+    });
+  }
+
+  private showFunkyBanner(): void {
+    this.funkyBanner.setAlpha(1).setScale(0.7);
+    this.tweens.add({
+      targets: this.funkyBanner,
+      scale: 1,
+      duration: 200,
+      ease: 'Back.Out',
+    });
+    this.tweens.add({
+      targets: this.funkyBanner,
+      alpha: 0,
+      delay: 500,
+      duration: 400,
+    });
   }
 
   private flashMarker(lane: Lane, color: number): void {
