@@ -58,10 +58,12 @@ alongside source. Live path ends up at
 
 The toggle's "Modern" side stayed on "Coming Soon" until there was an
 actual playable milestone, per the plan above. That milestone has long
-since passed — the toggle now embeds the real Modern build (via an
-iframe pointing at `modern/dist/index.html`, lazy-loaded on first
-switch and unloaded on the way back to Classic so its audio doesn't
-keep running offscreen) instead of a placeholder card.
+since passed. First replaced with an in-page toggle that embedded
+Modern in an iframe; that was itself replaced with a plain "Try the
+Modern Edition" button on the Classic page that navigates (full page
+load) to `modern/dist/index.html`, since an embedded iframe wasn't
+landing as an actual navigable page for readers. Modern's own
+`index.html` carries a small "← Classic" link back to the root page.
 
 ---
 

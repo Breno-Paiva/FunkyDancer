@@ -13,7 +13,6 @@
     <script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script type="text/javascript" src="bundle.js"></script>
-    <script type="text/javascript" src="./assets/version_toggle.js" defer></script>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -33,23 +32,11 @@
       <a href="https://github.com/Breno-Paiva"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
     </div>
 
-    <div class="version-switch">
-      <span class="version-switch__side" id="versionLabelClassic">
-        Classic <span class="version-badge">circa 2017</span>
-      </span>
-      <button type="button"
-              id="versionToggle"
-              class="version-toggle"
-              role="switch"
-              aria-checked="false"
-              aria-label="Modern version">
-        <span class="version-toggle__thumb" aria-hidden="true"></span>
-      </button>
-      <span class="version-switch__side" id="versionLabelModern">
-        Modern <span class="version-badge version-badge--new">new</span>
-      </span>
-      <span id="versionAnnouncer" class="visually-hidden" aria-live="polite"></span>
-    </div>
+    <a class="modern-cta" href="./modern/dist/index.html">
+      <i class="fa fa-bolt" aria-hidden="true"></i>
+      Try the Modern Edition
+      <span class="version-badge version-badge--new">new</span>
+    </a>
 
     <div id="classic-version">
       <p class="version-caption">Classic Edition &mdash; circa 2017</p>
@@ -81,14 +68,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div id="modern-version" class="modern-frame-wrap" hidden>
-      <p class="version-caption">Modern Edition &mdash; in development</p>
-      <iframe id="modernFrame" class="modern-frame" title="Funky Dancer — Modern Edition"></iframe>
-      <p class="modern-frame-hint">
-        <a href="./modern/dist/index.html" target="_blank" rel="noopener">Open in its own tab &#8599;</a>
-      </p>
     </div>
   </body>
 </html>
